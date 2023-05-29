@@ -17,29 +17,29 @@
 package v1alpha1
 
 import (
-	nascrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/gpu/nas/v1alpha1"
+	nascrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/nas/v1alpha1"
 )
 
 const (
-	GroupName = "gpu.resource.example.com"
+	GroupName = "cpu.resource.example.com"
 	Version   = "v1alpha1"
 
-	GpuClaimParametersKind = "GpuClaimParameters"
+	CpuClaimParametersKind = "CpuClaimParameters"
 )
 
-func DefaultDeviceClassParametersSpec() *DeviceClassParametersSpec {
-	return &DeviceClassParametersSpec{
-		DeviceSelector: []DeviceSelector{
+func DefaultDeviceClassParametersSpec() *ResourceClassParametersSpec {
+	return &ResourceClassParametersSpec{
+		CPUResourceSelector: []ResourceSelector{
 			{
-				Type: nascrd.GpuDeviceType,
+				Type: nascrd.CpuResourceType,
 				Name: "*",
 			},
 		},
 	}
 }
 
-func DefaultGpuClaimParametersSpec() *GpuClaimParametersSpec {
-	return &GpuClaimParametersSpec{
+func DefaultCpuClaimParametersSpec() *CpuClaimParametersSpec {
+	return &CpuClaimParametersSpec{
 		Count: 1,
 	}
 }
