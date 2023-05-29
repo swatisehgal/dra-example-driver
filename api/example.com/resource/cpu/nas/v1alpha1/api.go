@@ -21,11 +21,11 @@ import (
 )
 
 const (
-	GroupName = "nas.gpu.resource.example.com"
+	GroupName = "nas.cpu.resource.example.com"
 	Version   = "v1alpha1"
 
-	GpuDeviceType     = "gpu"
-	UnknownDeviceType = "unknown"
+	CpuResourceType        = "cpu"
+	UnknownCPUResourceType = "unknown"
 
 	NodeAllocationStateStatusReady    = "Ready"
 	NodeAllocationStateStatusNotReady = "NotReady"

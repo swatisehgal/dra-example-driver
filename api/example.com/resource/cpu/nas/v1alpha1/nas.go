@@ -20,76 +20,76 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// AllocatableGpu represents an allocatable GPU on a node.
-type AllocatableGpu struct {
+// AllocatableCpu represents an allocatable CPU on a node.
+type AllocatableCpu struct {
 	UUID        string `json:"uuid"`
 	ProductName string `json:"productName"`
 }
 
-// AllocatableDevice represents an allocatable device on a node.
-type AllocatableDevice struct {
-	Gpu *AllocatableGpu `json:"gpu,omitempty"`
+// AllocatableResource represents an allocatable device on a node.
+type AllocatableResource struct {
+	CpuResource *AllocatableCpu `json:"gpu,omitempty"`
 }
 
-// Type returns the type of AllocatableDevice this represents.
-func (d AllocatableDevice) Type() string {
-	if d.Gpu != nil {
-		return GpuDeviceType
+// Type returns the type of AllocatableResource this represents.
+func (d AllocatableResource) Type() string {
+	if d.CpuResource != nil {
+		return CpuResourceType
 	}
-	return UnknownDeviceType
+	return UnknownCPUResourceType
 }
 
-// AllocatedGpu represents an allocated GPU.
-type AllocatedGpu struct {
+// AllocatedCpu represents an allocated GPU.
+type AllocatedCpu struct {
 	UUID string `json:"uuid,omitempty"`
 }
 
-// AllocatedGpus represents a set of allocated GPUs.
-type AllocatedGpus struct {
-	Devices []AllocatedGpu `json:"devices"`
+// AllocatedCpus represents a set of allocated GPUs.
+type AllocatedCpus struct {
+	Resources []AllocatedCpu `json:"devices"`
 }
 
 // AllocatedDevices represents a set of allocated devices.
-type AllocatedDevices struct {
-	Gpu *AllocatedGpus `json:"gpu,omitempty"`
+type AllocatedResources struct {
+	CpuResource *AllocatedCpus `json:"gpu,omitempty"`
 }
 
 // Type returns the type of AllocatedDevices this represents.
-func (r AllocatedDevices) Type() string {
-	if r.Gpu != nil {
-		return GpuDeviceType
+func (r AllocatedResources) Type() string {
+	if r.CpuResource != nil {
+		return CpuResourceType
 	}
-	return UnknownDeviceType
+	return UnknownCPUResourceType
 }
 
-// PreparedGpu represents a prepared GPU on a node.
-type PreparedGpu struct {
+// PreparedCpu represents a prepared GPU on a node.
+type PreparedCpu struct {
 	UUID string `json:"uuid"`
 }
 
-// PreparedGpus represents a set of prepared GPUs on a node.
-type PreparedGpus struct {
-	Devices []PreparedGpu `json:"devices"`
+// PreparedCpus represents a set of prepared GPUs on a node.
+type PreparedCpus struct {
+	Resources []PreparedCpu `json:"devices"`
 }
 
 // PreparedDevices represents a set of prepared devices on a node.
-type PreparedDevices struct {
-	Gpu *PreparedGpus `json:"gpu,omitempty"`
+type PreparedResources struct {
+	CpuResource *PreparedCpus `json:"gpu,omitempty"`
 }
 
 // Type returns the type of PreparedDevices this represents.
-func (d PreparedDevices) Type() string {
-	if d.Gpu != nil {
-		return GpuDeviceType
+func (d PreparedResources) Type() string {
+	if d.CpuResource != nil {
+		return CpuResourceType
 	}
-	return UnknownDeviceType
+	return UnknownCPUResourceType
 }
 
 // NodeAllocationStateSpec is the spec for the NodeAllocationState CRD.
 type NodeAllocationStateSpec struct {
-	AllocatableDevices []AllocatableDevice         `json:"allocatableDevices,omitempty"`
-	AllocatedClaims    map[string]AllocatedDevices `json:"allocatedClaims,omitempty"`
-	PreparedClaims     map[string]PreparedDevices  `json:"preparedClaims,omitempty"`
+	AllocatableResources []AllocatableResource         `json:"allocatableResources,omitempty"`
+	AllocatedClaims      map[string]AllocatedResources `json:"allocatedClaims,omitempty"`
+	PreparedClaims       map[string]PreparedResources  `json:"preparedClaims,omitempty"`
 }
 
 // +genclient
