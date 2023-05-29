@@ -23,15 +23,15 @@ import (
 	"github.com/google/uuid"
 )
 
-func enumerateAllPossibleDevices() (AllocatableDevices, error) {
+func enumerateAllPossibleDevices() (AllocatableResources, error) {
 	numGPUs := 8
 	seed := os.Getenv("NODE_NAME")
 	uuids := generateUUIDs(seed, numGPUs)
 
-	alldevices := make(AllocatableDevices)
+	alldevices := make(AllocatableResources)
 	for _, uuid := range uuids {
-		deviceInfo := &AllocatableDeviceInfo{
-			GpuInfo: &GpuInfo{
+		deviceInfo := &AllocatableResourceInfo{
+			CpuInfo: &CpuInfo{
 				uuid:  uuid,
 				model: "LATEST-GPU-MODEL",
 			},

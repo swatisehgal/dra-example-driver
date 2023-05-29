@@ -22,7 +22,7 @@ import (
 
 	cdiapi "github.com/container-orchestrated-devices/container-device-interface/pkg/cdi"
 	cdispec "github.com/container-orchestrated-devices/container-device-interface/specs-go"
-	nascrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/gpu/nas/v1alpha1"
+	nascrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/nas/v1alpha1"
 )
 
 const (
@@ -88,7 +88,7 @@ func (cdi *CDIHandler) CreateCommonSpecFile() error {
 	return cdi.registry.SpecDB().WriteSpec(spec, specName)
 }
 
-func (cdi *CDIHandler) CreateClaimSpecFile(claimUID string, devices *PreparedDevices) error {
+func (cdi *CDIHandler) CreateClaimSpecFile(claimUID string, devices *PreparedResources) error {
 	specName := cdiapi.GenerateTransientSpecName(cdiVendor, cdiClass, claimUID)
 
 	spec := &cdispec.Spec{
@@ -98,8 +98,8 @@ func (cdi *CDIHandler) CreateClaimSpecFile(claimUID string, devices *PreparedDev
 
 	gpuIdx := 0
 	switch devices.Type() {
-	case nascrd.GpuDeviceType:
-		for _, device := range devices.Gpu.Devices {
+	case nascrd.CpuResourceType:
+		for _, device := range devices.Cpu.Resources {
 			cdiDevice := cdispec.Device{
 				Name: device.uuid,
 				ContainerEdits: cdispec.ContainerEdits{
@@ -127,14 +127,14 @@ func (cdi *CDIHandler) DeleteClaimSpecFile(claimUID string) error {
 	return cdi.registry.SpecDB().RemoveSpec(specName)
 }
 
-func (cdi *CDIHandler) GetClaimDevices(claimUID string, devices *PreparedDevices) []string {
+func (cdi *CDIHandler) GetClaimDevices(claimUID string, devices *PreparedResources) []string {
 	cdiDevices := []string{
 		cdiapi.QualifiedName(cdiVendor, cdiClass, cdiCommonDeviceName),
 	}
 
 	switch devices.Type() {
-	case nascrd.GpuDeviceType:
-		for _, device := range devices.Gpu.Devices {
+	case nascrd.CpuResourceType:
+		for _, device := range devices.Cpu.Resources {
 			cdiDevice := cdiapi.QualifiedName(cdiVendor, cdiClass, device.uuid)
 			cdiDevices = append(cdiDevices, cdiDevice)
 		}

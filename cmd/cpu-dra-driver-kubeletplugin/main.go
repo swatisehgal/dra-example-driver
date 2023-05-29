@@ -37,14 +37,14 @@ import (
 	plugin "k8s.io/dynamic-resource-allocation/kubeletplugin"
 	"k8s.io/klog/v2"
 
-	nascrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/gpu/nas/v1alpha1"
-	gpucrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/gpu/v1alpha1"
+	nascrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/nas/v1alpha1"
+	cpucrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/v1alpha1"
 	exampleclientset "github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/clientset/versioned"
 )
 
 const (
-	DriverName     = gpucrd.GroupName
-	DriverAPIGroup = gpucrd.GroupName
+	DriverName     = cpucrd.GroupName
+	DriverAPIGroup = cpucrd.GroupName
 
 	PluginRegistrationPath = "/var/lib/kubelet/plugins_registry/" + DriverName + ".sock"
 	DriverPluginPath       = "/var/lib/kubelet/plugins/" + DriverName

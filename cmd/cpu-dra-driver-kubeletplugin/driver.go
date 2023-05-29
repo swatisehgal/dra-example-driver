@@ -24,8 +24,8 @@ import (
 	"k8s.io/klog/v2"
 	drapbv1 "k8s.io/kubelet/pkg/apis/dra/v1alpha2"
 
-	nascrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/gpu/nas/v1alpha1"
-	nasclient "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/gpu/nas/v1alpha1/client"
+	nascrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/nas/v1alpha1"
+	nasclient "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/nas/v1alpha1/client"
 )
 
 var _ drapbv1.NodeServer = &driver{}
@@ -33,7 +33,7 @@ var _ drapbv1.NodeServer = &driver{}
 type driver struct {
 	nascrd    *nascrd.NodeAllocationState
 	nasclient *nasclient.Client
-	state     *DeviceState
+	state     *ResourceState
 }
 
 func NewDriver(config *Config) (*driver, error) {
@@ -50,7 +50,7 @@ func NewDriver(config *Config) (*driver, error) {
 			return err
 		}
 
-		state, err := NewDeviceState(config)
+		state, err := NewResourceState(config)
 		if err != nil {
 			return err
 		}
