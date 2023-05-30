@@ -105,7 +105,7 @@ func (c *FakeGpuClaimParameters) Update(ctx context.Context, gpuClaimParameters 
 // Delete takes name of the gpuClaimParameters and deletes it. Returns an error if one occurs.
 func (c *FakeGpuClaimParameters) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteActionWithOptions(gpuclaimparametersResource, c.ns, name, opts), &v1alpha1.GpuClaimParameters{})
+		Invokes(testing.NewDeleteAction(gpuclaimparametersResource, c.ns, name), &v1alpha1.GpuClaimParameters{})
 
 	return err
 }

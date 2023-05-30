@@ -105,7 +105,7 @@ func (c *FakeNodeAllocationStates) Update(ctx context.Context, nodeAllocationSta
 // Delete takes name of the nodeAllocationState and deletes it. Returns an error if one occurs.
 func (c *FakeNodeAllocationStates) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteActionWithOptions(nodeallocationstatesResource, c.ns, name, opts), &v1alpha1.NodeAllocationState{})
+		Invokes(testing.NewDeleteAction(nodeallocationstatesResource, c.ns, name), &v1alpha1.NodeAllocationState{})
 
 	return err
 }

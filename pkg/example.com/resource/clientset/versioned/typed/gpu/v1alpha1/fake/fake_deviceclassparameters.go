@@ -99,7 +99,7 @@ func (c *FakeDeviceClassParameters) Update(ctx context.Context, deviceClassParam
 // Delete takes name of the deviceClassParameters and deletes it. Returns an error if one occurs.
 func (c *FakeDeviceClassParameters) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewRootDeleteActionWithOptions(deviceclassparametersResource, name, opts), &v1alpha1.DeviceClassParameters{})
+		Invokes(testing.NewRootDeleteAction(deviceclassparametersResource, name), &v1alpha1.DeviceClassParameters{})
 	return err
 }
 
