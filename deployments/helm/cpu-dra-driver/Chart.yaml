@@ -1,6 +1,6 @@
 apiVersion: v2
-name: dra-example-driver
-description: An example Helm chart for a Dynamic Resource Allocation (DRA) resource driver
+name: cpu-dra-driver
+description: A Helm chart for a CPU Dynamic Resource Allocation (DRA) resource driver
 
 # A chart can be either an 'application' or a 'library' chart.
 #

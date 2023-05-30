@@ -2,5 +2,5 @@
 apiVersion: resource.k8s.io/v1alpha2
 kind: ResourceClass
 metadata:
-  name: gpu.example.com
-driverName: gpu.resource.example.com
+  name: cpu.example.com
+driverName: cpu.resource.example.com
