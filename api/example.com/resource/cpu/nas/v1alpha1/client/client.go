@@ -23,7 +23,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	nascrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/nas/v1alpha1"
-	nasclient "github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/clientset/versioned/typed/nas/v1alpha1"
+	nasclient "github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/cpu/clientset/versioned/typed/nas/v1alpha1"
 )
 
 type Client struct {

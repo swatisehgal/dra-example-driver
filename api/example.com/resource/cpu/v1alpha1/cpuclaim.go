@@ -30,7 +30,7 @@ type CpuClaimParametersSpec struct {
 // +k8s:openapi-gen=true
 // +kubebuilder:resource:scope=Namespaced
 
-// GpuClaimParameters holds the set of parameters provided when creating a resource claim for a CPU.
+// CpuClaimParameters holds the set of parameters provided when creating a resource claim for a CPU.
 type CpuClaimParameters struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
