@@ -16,12 +16,14 @@ GOLANG_VERSION ?= 1.20.3
 
 DRIVER_NAME := dra-example-driver
 MODULE := github.com/kubernetes-sigs/$(DRIVER_NAME)
+CPU_DRIVER_NAME := cpu-dra-driver
 
 VERSION  ?= v0.1.0
 vVERSION := v$(VERSION:v%=%)
 
 VENDOR := example.com
 APIS := gpu/nas/v1alpha1 gpu/v1alpha1
+CPUAPIS := cpu/nas/v1alpha1 cpu/v1alpha1
 
 PLURAL_EXCEPTIONS  = DeviceClassParameters:DeviceClassParameters
 PLURAL_EXCEPTIONS += GpuClaimParameters:GpuClaimParameters
