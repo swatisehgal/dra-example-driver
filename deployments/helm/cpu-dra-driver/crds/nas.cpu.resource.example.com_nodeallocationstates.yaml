@@ -5,9 +5,9 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.9.2
   creationTimestamp: null
-  name: nodeallocationstates.nas.gpu.resource.example.com
+  name: nodeallocationstates.nas.cpu.resource.example.com
 spec:
-  group: nas.gpu.resource.example.com
+  group: nas.cpu.resource.example.com
   names:
     kind: NodeAllocationState
     listKind: NodeAllocationStateList
@@ -37,13 +37,13 @@ spec:
             description: NodeAllocationStateSpec is the spec for the NodeAllocationState
               CRD.
             properties:
-              allocatableDevices:
+              allocatableResources:
                 items:
-                  description: AllocatableDevice represents an allocatable device
+                  description: AllocatableResource represents an allocatable device
                     on a node.
                   properties:
                     gpu:
-                      description: AllocatableGpu represents an allocatable GPU on
+                      description: AllocatableCpu represents an allocatable CPU on
                         a node.
                       properties:
                         productName:
@@ -61,11 +61,11 @@ spec:
                   description: AllocatedDevices represents a set of allocated devices.
                   properties:
                     gpu:
-                      description: AllocatedGpus represents a set of allocated GPUs.
+                      description: AllocatedCpus represents a set of allocated GPUs.
                       properties:
                         devices:
                           items:
-                            description: AllocatedGpu represents an allocated GPU.
+                            description: AllocatedCpu represents an allocated GPU.
                             properties:
                               uuid:
                                 type: string
@@ -82,12 +82,12 @@ spec:
                     on a node.
                   properties:
                     gpu:
-                      description: PreparedGpus represents a set of prepared GPUs
+                      description: PreparedCpus represents a set of prepared GPUs
                         on a node.
                       properties:
                         devices:
                           items:
-                            description: PreparedGpu represents a prepared GPU on
+                            description: PreparedCpu represents a prepared GPU on
                               a node.
                             properties:
                               uuid:
