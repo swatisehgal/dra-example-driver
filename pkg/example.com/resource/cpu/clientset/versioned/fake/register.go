@@ -19,8 +19,8 @@
 package fake
 
 import (
-	nasv1alpha1 "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/gpu/nas/v1alpha1"
-	gpuv1alpha1 "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/gpu/v1alpha1"
+	nasv1alpha1 "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/nas/v1alpha1"
+	cpuv1alpha1 "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -32,7 +32,7 @@ var scheme = runtime.NewScheme()
 var codecs = serializer.NewCodecFactory(scheme)
 
 var localSchemeBuilder = runtime.SchemeBuilder{
-	gpuv1alpha1.AddToScheme,
+	cpuv1alpha1.AddToScheme,
 	nasv1alpha1.AddToScheme,
 }
 

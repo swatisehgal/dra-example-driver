@@ -19,26 +19,26 @@
 package fake
 
 import (
-	v1alpha1 "github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/cpu/clientset/versioned/typed/gpu/v1alpha1"
+	v1alpha1 "github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/cpu/clientset/versioned/typed/cpu/v1alpha1"
 	rest "k8s.io/client-go/rest"
 	testing "k8s.io/client-go/testing"
 )
 
-type FakeGpuV1alpha1 struct {
+type FakeCpuV1alpha1 struct {
 	*testing.Fake
 }
 
-func (c *FakeGpuV1alpha1) DeviceClassParameters() v1alpha1.DeviceClassParametersInterface {
-	return &FakeDeviceClassParameters{c}
+func (c *FakeCpuV1alpha1) CpuClaimParameterses(namespace string) v1alpha1.CpuClaimParametersInterface {
+	return &FakeCpuClaimParameterses{c, namespace}
 }
 
-func (c *FakeGpuV1alpha1) GpuClaimParameters(namespace string) v1alpha1.GpuClaimParametersInterface {
-	return &FakeGpuClaimParameters{c, namespace}
+func (c *FakeCpuV1alpha1) ResourceClassParameterses() v1alpha1.ResourceClassParametersInterface {
+	return &FakeResourceClassParameterses{c}
 }
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *FakeGpuV1alpha1) RESTClient() rest.Interface {
+func (c *FakeCpuV1alpha1) RESTClient() rest.Interface {
 	var ret *rest.RESTClient
 	return ret
 }

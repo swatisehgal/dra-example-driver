@@ -18,6 +18,6 @@
 
 package v1alpha1
 
-type DeviceClassParametersExpansion interface{}
+type CpuClaimParametersExpansion interface{}
 
-type GpuClaimParametersExpansion interface{}
+type ResourceClassParametersExpansion interface{}

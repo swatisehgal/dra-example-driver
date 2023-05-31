@@ -21,7 +21,7 @@ package versioned
 import (
 	"fmt"
 
-	gpuv1alpha1 "github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/cpu/clientset/versioned/typed/gpu/v1alpha1"
+	cpuv1alpha1 "github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/cpu/clientset/versioned/typed/cpu/v1alpha1"
 	nasv1alpha1 "github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/cpu/clientset/versioned/typed/nas/v1alpha1"
 	discovery "k8s.io/client-go/discovery"
 	rest "k8s.io/client-go/rest"
@@ -30,7 +30,7 @@ import (
 
 type Interface interface {
 	Discovery() discovery.DiscoveryInterface
-	GpuV1alpha1() gpuv1alpha1.GpuV1alpha1Interface
+	CpuV1alpha1() cpuv1alpha1.CpuV1alpha1Interface
 	NasV1alpha1() nasv1alpha1.NasV1alpha1Interface
 }
 
@@ -38,13 +38,13 @@ type Interface interface {
 // version included in a Clientset.
 type Clientset struct {
 	*discovery.DiscoveryClient
-	gpuV1alpha1 *gpuv1alpha1.GpuV1alpha1Client
+	cpuV1alpha1 *cpuv1alpha1.CpuV1alpha1Client
 	nasV1alpha1 *nasv1alpha1.NasV1alpha1Client
 }
 
-// GpuV1alpha1 retrieves the GpuV1alpha1Client
-func (c *Clientset) GpuV1alpha1() gpuv1alpha1.GpuV1alpha1Interface {
-	return c.gpuV1alpha1
+// CpuV1alpha1 retrieves the CpuV1alpha1Client
+func (c *Clientset) CpuV1alpha1() cpuv1alpha1.CpuV1alpha1Interface {
+	return c.cpuV1alpha1
 }
 
 // NasV1alpha1 retrieves the NasV1alpha1Client
@@ -73,7 +73,7 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 	}
 	var cs Clientset
 	var err error
-	cs.gpuV1alpha1, err = gpuv1alpha1.NewForConfig(&configShallowCopy)
+	cs.cpuV1alpha1, err = cpuv1alpha1.NewForConfig(&configShallowCopy)
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +93,7 @@ func NewForConfig(c *rest.Config) (*Clientset, error) {
 // panics if there is an error in the config.
 func NewForConfigOrDie(c *rest.Config) *Clientset {
 	var cs Clientset
-	cs.gpuV1alpha1 = gpuv1alpha1.NewForConfigOrDie(c)
+	cs.cpuV1alpha1 = cpuv1alpha1.NewForConfigOrDie(c)
 	cs.nasV1alpha1 = nasv1alpha1.NewForConfigOrDie(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClientForConfigOrDie(c)
@@ -103,7 +103,7 @@ func NewForConfigOrDie(c *rest.Config) *Clientset {
 // New creates a new Clientset for the given RESTClient.
 func New(c rest.Interface) *Clientset {
 	var cs Clientset
-	cs.gpuV1alpha1 = gpuv1alpha1.New(c)
+	cs.cpuV1alpha1 = cpuv1alpha1.New(c)
 	cs.nasV1alpha1 = nasv1alpha1.New(c)
 
 	cs.DiscoveryClient = discovery.NewDiscoveryClient(c)

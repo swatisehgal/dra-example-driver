@@ -20,8 +20,8 @@ package fake
 
 import (
 	clientset "github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/cpu/clientset/versioned"
-	gpuv1alpha1 "github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/cpu/clientset/versioned/typed/gpu/v1alpha1"
-	fakegpuv1alpha1 "github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/cpu/clientset/versioned/typed/gpu/v1alpha1/fake"
+	cpuv1alpha1 "github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/cpu/clientset/versioned/typed/cpu/v1alpha1"
+	fakecpuv1alpha1 "github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/cpu/clientset/versioned/typed/cpu/v1alpha1/fake"
 	nasv1alpha1 "github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/cpu/clientset/versioned/typed/nas/v1alpha1"
 	fakenasv1alpha1 "github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/cpu/clientset/versioned/typed/nas/v1alpha1/fake"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -81,9 +81,9 @@ var (
 	_ testing.FakeClient  = &Clientset{}
 )
 
-// GpuV1alpha1 retrieves the GpuV1alpha1Client
-func (c *Clientset) GpuV1alpha1() gpuv1alpha1.GpuV1alpha1Interface {
-	return &fakegpuv1alpha1.FakeGpuV1alpha1{Fake: &c.Fake}
+// CpuV1alpha1 retrieves the CpuV1alpha1Client
+func (c *Clientset) CpuV1alpha1() cpuv1alpha1.CpuV1alpha1Interface {
+	return &fakecpuv1alpha1.FakeCpuV1alpha1{Fake: &c.Fake}
 }
 
 // NasV1alpha1 retrieves the NasV1alpha1Client

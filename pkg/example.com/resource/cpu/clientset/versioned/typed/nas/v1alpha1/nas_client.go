@@ -19,7 +19,7 @@
 package v1alpha1
 
 import (
-	v1alpha1 "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/gpu/nas/v1alpha1"
+	v1alpha1 "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/nas/v1alpha1"
 	"github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/cpu/clientset/versioned/scheme"
 	rest "k8s.io/client-go/rest"
 )
@@ -29,7 +29,7 @@ type NasV1alpha1Interface interface {
 	NodeAllocationStatesGetter
 }
 
-// NasV1alpha1Client is used to interact with features provided by the nas.gpu.resource.example.com group.
+// NasV1alpha1Client is used to interact with features provided by the nas.cpu.resource.example.com group.
 type NasV1alpha1Client struct {
 	restClient rest.Interface
 }

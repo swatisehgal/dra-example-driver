@@ -21,7 +21,7 @@ package fake
 import (
 	"context"
 
-	v1alpha1 "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/gpu/nas/v1alpha1"
+	v1alpha1 "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/nas/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
@@ -36,9 +36,9 @@ type FakeNodeAllocationStates struct {
 	ns   string
 }
 
-var nodeallocationstatesResource = schema.GroupVersionResource{Group: "nas.gpu.resource.example.com", Version: "v1alpha1", Resource: "nodeallocationstates"}
+var nodeallocationstatesResource = schema.GroupVersionResource{Group: "nas.cpu.resource.example.com", Version: "v1alpha1", Resource: "nodeallocationstates"}
 
-var nodeallocationstatesKind = schema.GroupVersionKind{Group: "nas.gpu.resource.example.com", Version: "v1alpha1", Kind: "NodeAllocationState"}
+var nodeallocationstatesKind = schema.GroupVersionKind{Group: "nas.cpu.resource.example.com", Version: "v1alpha1", Kind: "NodeAllocationState"}
 
 // Get takes name of the nodeAllocationState, and returns the corresponding nodeAllocationState object, and an error if there is any.
 func (c *FakeNodeAllocationStates) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.NodeAllocationState, err error) {

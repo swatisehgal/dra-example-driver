@@ -19,32 +19,32 @@
 package v1alpha1
 
 import (
-	v1alpha1 "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/gpu/v1alpha1"
+	v1alpha1 "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/v1alpha1"
 	"github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/cpu/clientset/versioned/scheme"
 	rest "k8s.io/client-go/rest"
 )
 
-type GpuV1alpha1Interface interface {
+type CpuV1alpha1Interface interface {
 	RESTClient() rest.Interface
-	DeviceClassParametersGetter
-	GpuClaimParametersGetter
+	CpuClaimParametersesGetter
+	ResourceClassParametersesGetter
 }
 
-// GpuV1alpha1Client is used to interact with features provided by the gpu.resource.example.com group.
-type GpuV1alpha1Client struct {
+// CpuV1alpha1Client is used to interact with features provided by the cpu.resource.example.com group.
+type CpuV1alpha1Client struct {
 	restClient rest.Interface
 }
 
-func (c *GpuV1alpha1Client) DeviceClassParameters() DeviceClassParametersInterface {
-	return newDeviceClassParameters(c)
+func (c *CpuV1alpha1Client) CpuClaimParameterses(namespace string) CpuClaimParametersInterface {
+	return newCpuClaimParameterses(c, namespace)
 }
 
-func (c *GpuV1alpha1Client) GpuClaimParameters(namespace string) GpuClaimParametersInterface {
-	return newGpuClaimParameters(c, namespace)
+func (c *CpuV1alpha1Client) ResourceClassParameterses() ResourceClassParametersInterface {
+	return newResourceClassParameterses(c)
 }
 
-// NewForConfig creates a new GpuV1alpha1Client for the given config.
-func NewForConfig(c *rest.Config) (*GpuV1alpha1Client, error) {
+// NewForConfig creates a new CpuV1alpha1Client for the given config.
+func NewForConfig(c *rest.Config) (*CpuV1alpha1Client, error) {
 	config := *c
 	if err := setConfigDefaults(&config); err != nil {
 		return nil, err
@@ -53,12 +53,12 @@ func NewForConfig(c *rest.Config) (*GpuV1alpha1Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &GpuV1alpha1Client{client}, nil
+	return &CpuV1alpha1Client{client}, nil
 }
 
-// NewForConfigOrDie creates a new GpuV1alpha1Client for the given config and
+// NewForConfigOrDie creates a new CpuV1alpha1Client for the given config and
 // panics if there is an error in the config.
-func NewForConfigOrDie(c *rest.Config) *GpuV1alpha1Client {
+func NewForConfigOrDie(c *rest.Config) *CpuV1alpha1Client {
 	client, err := NewForConfig(c)
 	if err != nil {
 		panic(err)
@@ -66,9 +66,9 @@ func NewForConfigOrDie(c *rest.Config) *GpuV1alpha1Client {
 	return client
 }
 
-// New creates a new GpuV1alpha1Client for the given RESTClient.
-func New(c rest.Interface) *GpuV1alpha1Client {
-	return &GpuV1alpha1Client{c}
+// New creates a new CpuV1alpha1Client for the given RESTClient.
+func New(c rest.Interface) *CpuV1alpha1Client {
+	return &CpuV1alpha1Client{c}
 }
 
 func setConfigDefaults(config *rest.Config) error {
@@ -86,7 +86,7 @@ func setConfigDefaults(config *rest.Config) error {
 
 // RESTClient returns a RESTClient that is used to communicate
 // with API server by this client implementation.
-func (c *GpuV1alpha1Client) RESTClient() rest.Interface {
+func (c *CpuV1alpha1Client) RESTClient() rest.Interface {
 	if c == nil {
 		return nil
 	}
