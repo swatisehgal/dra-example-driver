@@ -28,7 +28,7 @@ import (
 	nascrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/nas/v1alpha1"
 	nasclient "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/nas/v1alpha1/client"
 	cpucrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/v1alpha1"
-	clientset "github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/clientset/versioned"
+	clientset "github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/cpu/clientset/versioned"
 )
 
 const (
@@ -42,7 +42,7 @@ type driver struct {
 	lock      *PerNodeMutex
 	namespace string
 	clientset clientset.Interface
-	gpu       *gpudriver
+	cpu       *cpudriver
 }
 
 var _ controller.Driver = &driver{}
@@ -52,7 +52,7 @@ func NewDriver(config *Config) *driver {
 		lock:      NewPerNodeMutex(),
 		namespace: config.namespace,
 		clientset: config.clientset.example,
-		gpu:       NewGpuDriver(),
+		cpu:       NewCpuDriver(),
 	}
 }
 
@@ -63,7 +63,7 @@ func (d driver) GetClassParameters(ctx context.Context, class *resourcev1.Resour
 	if class.ParametersRef.APIGroup != DriverAPIGroup {
 		return nil, fmt.Errorf("incorrect API group: %v", class.ParametersRef.APIGroup)
 	}
-	dc, err := d.clientset.GpuV1alpha1().DeviceClassParameters().Get(ctx, class.ParametersRef.Name, metav1.GetOptions{})
+	dc, err := d.clientset.CpuV1alpha1().ResourceClassParameterses().Get(ctx, class.ParametersRef.Name, metav1.GetOptions{})
 	if err != nil {
 		return nil, fmt.Errorf("error getting DeviceClassParameters called '%v': %v", class.ParametersRef.Name, err)
 	}
@@ -129,7 +129,7 @@ func (d driver) Allocate(ctx context.Context, claim *resourcev1.ResourceClaim, c
 
 	switch claimParams := claimParameters.(type) {
 	case *cpucrd.CpuClaimParametersSpec:
-		onSuccess, err = d.gpu.Allocate(crd, claim, claimParams, class, classParams, selectedNode)
+		onSuccess, err = d.cpu.Allocate(crd, claim, claimParams, class, classParams, selectedNode)
 	default:
 		err = fmt.Errorf("unknown ResourceClaim.ParametersRef.Kind: %v", claim.Spec.ParametersRef.Kind)
 	}
@@ -179,7 +179,7 @@ func (d driver) Deallocate(ctx context.Context, claim *resourcev1.ResourceClaim)
 	devices := crd.Spec.AllocatedClaims[string(claim.UID)]
 	switch devices.Type() {
 	case nascrd.CpuResourceType:
-		err = d.gpu.Deallocate(crd, claim)
+		err = d.cpu.Deallocate(crd, claim)
 	default:
 		err = fmt.Errorf("unknown AllocatedDevices.Type(): %v", devices.Type())
 	}
@@ -255,7 +255,7 @@ func (d driver) unsuitableNode(ctx context.Context, pod *corev1.Pod, allcas []*c
 		var err error
 		switch kind {
 		case cpucrd.CpuClaimParametersKind:
-			err = d.gpu.UnsuitableNode(crd, pod, perKindCas[kind], allcas, potentialNode)
+			err = d.cpu.UnsuitableNode(crd, pod, perKindCas[kind], allcas, potentialNode)
 		}
 		if err != nil {
 			return fmt.Errorf("error processing '%v': %v", kind, err)

@@ -27,24 +27,24 @@ import (
 	cpucrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/v1alpha1"
 )
 
-type gpudriver struct {
+type cpudriver struct {
 	PendingAllocatedClaims *PerNodeAllocatedClaims
 }
 
-func NewGpuDriver() *gpudriver {
-	return &gpudriver{
+func NewCpuDriver() *cpudriver {
+	return &cpudriver{
 		PendingAllocatedClaims: NewPerNodeAllocatedClaims(),
 	}
 }
 
-func (g *gpudriver) ValidateClaimParameters(claimParams *cpucrd.CpuClaimParametersSpec) error {
+func (g *cpudriver) ValidateClaimParameters(claimParams *cpucrd.CpuClaimParametersSpec) error {
 	if claimParams.Count < 1 {
 		return fmt.Errorf("invalid number of GPUs requested: %v", claimParams.Count)
 	}
 	return nil
 }
 
-func (g *gpudriver) Allocate(crd *nascrd.NodeAllocationState, claim *resourcev1.ResourceClaim, claimParams *cpucrd.CpuClaimParametersSpec, class *resourcev1.ResourceClass, classParams *cpucrd.ResourceClassParametersSpec, selectedNode string) (OnSuccessCallback, error) {
+func (g *cpudriver) Allocate(crd *nascrd.NodeAllocationState, claim *resourcev1.ResourceClaim, claimParams *cpucrd.CpuClaimParametersSpec, class *resourcev1.ResourceClass, classParams *cpucrd.ResourceClassParametersSpec, selectedNode string) (OnSuccessCallback, error) {
 	claimUID := string(claim.UID)
 
 	if !g.PendingAllocatedClaims.Exists(claimUID, selectedNode) {
@@ -59,12 +59,12 @@ func (g *gpudriver) Allocate(crd *nascrd.NodeAllocationState, claim *resourcev1.
 	return onSuccess, nil
 }
 
-func (g *gpudriver) Deallocate(crd *nascrd.NodeAllocationState, claim *resourcev1.ResourceClaim) error {
+func (g *cpudriver) Deallocate(crd *nascrd.NodeAllocationState, claim *resourcev1.ResourceClaim) error {
 	g.PendingAllocatedClaims.Remove(string(claim.UID))
 	return nil
 }
 
-func (g *gpudriver) UnsuitableNode(crd *nascrd.NodeAllocationState, pod *corev1.Pod, gpucas []*controller.ClaimAllocation, allcas []*controller.ClaimAllocation, potentialNode string) error {
+func (g *cpudriver) UnsuitableNode(crd *nascrd.NodeAllocationState, pod *corev1.Pod, gpucas []*controller.ClaimAllocation, allcas []*controller.ClaimAllocation, potentialNode string) error {
 	g.PendingAllocatedClaims.VisitNode(potentialNode, func(claimUID string, allocation nascrd.AllocatedResources) {
 		if _, exists := crd.Spec.AllocatedClaims[claimUID]; exists {
 			g.PendingAllocatedClaims.Remove(claimUID)
@@ -106,7 +106,7 @@ func (g *gpudriver) UnsuitableNode(crd *nascrd.NodeAllocationState, pod *corev1.
 	return nil
 }
 
-func (g *gpudriver) allocate(crd *nascrd.NodeAllocationState, pod *corev1.Pod, gpucas []*controller.ClaimAllocation, allcas []*controller.ClaimAllocation, node string) map[string][]string {
+func (g *cpudriver) allocate(crd *nascrd.NodeAllocationState, pod *corev1.Pod, gpucas []*controller.ClaimAllocation, allcas []*controller.ClaimAllocation, node string) map[string][]string {
 	available := make(map[string]*nascrd.AllocatableCpu)
 
 	for _, resource := range crd.Spec.AllocatableResources {

@@ -52,7 +52,7 @@ import (
 	_ "k8s.io/component-base/metrics/prometheus/version"    // for version metric registration
 	_ "k8s.io/component-base/metrics/prometheus/workqueue"  // register work queues in the default legacy registry
 
-	exampleclientset "github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/clientset/versioned"
+	exampleclientset "github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/cpu/clientset/versioned"
 )
 
 type Flags struct {
