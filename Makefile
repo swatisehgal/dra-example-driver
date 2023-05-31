@@ -122,7 +122,7 @@ generate-clientset: generate-crds
 		--output-package "$(MODULE)/pkg/$(VENDOR)/resource/cpu/clientset" \
 		--input-base "$(MODULE)/api/$(VENDOR)/resource" \
 		--output-base "$(CURDIR)/pkg/tmp_cpu_clientset" \
-		--input "$(shell echo $(APIS) | tr ' ' ',')" \
+		--input "$(shell echo $(CPUAPIS) | tr ' ' ',')" \
 		--plural-exceptions "$(shell echo $(PLURAL_EXCEPTIONS) | tr ' ' ',')"
 	mv $(CURDIR)/pkg/tmp_cpu_clientset/$(MODULE)/pkg/$(VENDOR)/resource/cpu/clientset \
        $(CURDIR)/pkg/$(VENDOR)/resource/cpu/clientset
