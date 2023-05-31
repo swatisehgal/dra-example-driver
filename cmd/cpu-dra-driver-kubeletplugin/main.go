@@ -39,7 +39,7 @@ import (
 
 	nascrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/nas/v1alpha1"
 	cpucrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/v1alpha1"
-	exampleclientset "github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/clientset/versioned"
+	exampleclientset "github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/cpu/clientset/versioned"
 )
 
 const (
