@@ -42,7 +42,7 @@ spec:
                   description: AllocatableResource represents an allocatable device
                     on a node.
                   properties:
-                    gpu:
+                    cpuResource:
                       description: AllocatableCpu represents an allocatable CPU on
                         a node.
                       properties:
@@ -60,10 +60,10 @@ spec:
                 additionalProperties:
                   description: AllocatedDevices represents a set of allocated devices.
                   properties:
-                    gpu:
+                    cpuResource:
                       description: AllocatedCpus represents a set of allocated GPUs.
                       properties:
-                        devices:
+                        resources:
                           items:
                             description: AllocatedCpu represents an allocated GPU.
                             properties:
@@ -72,7 +72,7 @@ spec:
                             type: object
                           type: array
                       required:
-                      - devices
+                      - resources
                       type: object
                   type: object
                 type: object
@@ -81,11 +81,11 @@ spec:
                   description: PreparedDevices represents a set of prepared devices
                     on a node.
                   properties:
-                    gpu:
+                    cpuResource:
                       description: PreparedCpus represents a set of prepared GPUs
                         on a node.
                       properties:
-                        devices:
+                        resources:
                           items:
                             description: PreparedCpu represents a prepared GPU on
                               a node.
@@ -97,7 +97,7 @@ spec:
                             type: object
                           type: array
                       required:
-                      - devices
+                      - resources
                       type: object
                   type: object
                 type: object

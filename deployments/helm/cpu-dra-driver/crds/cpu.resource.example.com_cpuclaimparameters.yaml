@@ -18,7 +18,7 @@ spec:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: GpuClaimParameters holds the set of parameters provided when
+        description: CpuClaimParameters holds the set of parameters provided when
           creating a resource claim for a CPU.
         properties:
           apiVersion:
