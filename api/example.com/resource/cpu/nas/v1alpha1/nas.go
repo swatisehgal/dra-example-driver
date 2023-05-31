@@ -28,7 +28,7 @@ type AllocatableCpu struct {
 
 // AllocatableResource represents an allocatable device on a node.
 type AllocatableResource struct {
-	CpuResource *AllocatableCpu `json:"gpu,omitempty"`
+	CpuResource *AllocatableCpu `json:"cpuResource,omitempty"`
 }
 
 // Type returns the type of AllocatableResource this represents.
@@ -46,12 +46,12 @@ type AllocatedCpu struct {
 
 // AllocatedCpus represents a set of allocated GPUs.
 type AllocatedCpus struct {
-	Resources []AllocatedCpu `json:"devices"`
+	Resources []AllocatedCpu `json:"resources"`
 }
 
 // AllocatedDevices represents a set of allocated devices.
 type AllocatedResources struct {
-	CpuResource *AllocatedCpus `json:"gpu,omitempty"`
+	CpuResource *AllocatedCpus `json:"cpuResource,omitempty"`
 }
 
 // Type returns the type of AllocatedDevices this represents.
@@ -69,12 +69,12 @@ type PreparedCpu struct {
 
 // PreparedCpus represents a set of prepared GPUs on a node.
 type PreparedCpus struct {
-	Resources []PreparedCpu `json:"devices"`
+	Resources []PreparedCpu `json:"resources"`
 }
 
 // PreparedDevices represents a set of prepared devices on a node.
 type PreparedResources struct {
-	CpuResource *PreparedCpus `json:"gpu,omitempty"`
+	CpuResource *PreparedCpus `json:"cpuResource,omitempty"`
 }
 
 // Type returns the type of PreparedDevices this represents.
