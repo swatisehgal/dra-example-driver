@@ -27,9 +27,9 @@ const (
 	CpuClaimParametersKind = "CpuClaimParameters"
 )
 
-func DefaultDeviceClassParametersSpec() *ResourceClassParametersSpec {
-	return &ResourceClassParametersSpec{
-		CPUResourceSelector: []ResourceSelector{
+func DefaultDeviceClassParametersSpec() *CpuResourceClassParametersSpec {
+	return &CpuResourceClassParametersSpec{
+		CpuResourceSelector: []CpuResourceSelector{
 			{
 				Type: nascrd.CpuResourceType,
 				Name: "*",
