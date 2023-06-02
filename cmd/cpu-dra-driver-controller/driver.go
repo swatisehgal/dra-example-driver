@@ -77,18 +77,18 @@ func (d driver) GetClaimParameters(ctx context.Context, claim *resourcev1.Resour
 	if claim.Spec.ParametersRef.APIGroup != DriverAPIGroup {
 		return nil, fmt.Errorf("incorrect API group: %v", claim.Spec.ParametersRef.APIGroup)
 	}
-	// switch claim.Spec.ParametersRef.Kind {
-	// case cpucrd.CpuClaimParametersKind:
-	// 	gc, err := d.clientset.CpuV1alpha1().CpuClaimParameters(claim.Namespace).Get(ctx, claim.Spec.ParametersRef.Name, metav1.GetOptions{})
-	// 	if err != nil {
-	// 		return nil, fmt.Errorf("error getting GpuClaimParameters called '%v' in namespace '%v': %v", claim.Spec.ParametersRef.Name, claim.Namespace, err)
-	// 	}
-	// 	err = d.gpu.ValidateClaimParameters(&gc.Spec)
-	// 	if err != nil {
-	// 		return nil, fmt.Errorf("error validating GpuClaimParameters called '%v' in namespace '%v': %v", claim.Spec.ParametersRef.Name, claim.Namespace, err)
-	// 	}
-	// 	return &gc.Spec, nil
-	// }
+	switch claim.Spec.ParametersRef.Kind {
+	case cpucrd.CpuClaimParametersKind:
+		gc, err := d.clientset.CpuV1alpha1().CpuClaimParameterses(claim.Namespace).Get(ctx, claim.Spec.ParametersRef.Name, metav1.GetOptions{})
+		if err != nil {
+			return nil, fmt.Errorf("error getting CpuClaimParameters called '%v' in namespace '%v': %v", claim.Spec.ParametersRef.Name, claim.Namespace, err)
+		}
+		err = d.cpu.ValidateClaimParameters(&gc.Spec)
+		if err != nil {
+			return nil, fmt.Errorf("error validating CpuClaimParameters called '%v' in namespace '%v': %v", claim.Spec.ParametersRef.Name, claim.Namespace, err)
+		}
+		return &gc.Spec, nil
+	}
 	return nil, fmt.Errorf("unknown ResourceClaim.ParametersRef.Kind: %v", claim.Spec.ParametersRef.Kind)
 }
 
