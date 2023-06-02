@@ -63,7 +63,7 @@ func (d driver) GetClassParameters(ctx context.Context, class *resourcev1.Resour
 	if class.ParametersRef.APIGroup != DriverAPIGroup {
 		return nil, fmt.Errorf("incorrect API group: %v", class.ParametersRef.APIGroup)
 	}
-	dc, err := d.clientset.CpuV1alpha1().ResourceClassParameterses().Get(ctx, class.ParametersRef.Name, metav1.GetOptions{})
+	dc, err := d.clientset.CpuV1alpha1().CpuResourceClassParameterses().Get(ctx, class.ParametersRef.Name, metav1.GetOptions{})
 	if err != nil {
 		return nil, fmt.Errorf("error getting DeviceClassParameters called '%v': %v", class.ParametersRef.Name, err)
 	}
@@ -125,7 +125,7 @@ func (d driver) Allocate(ctx context.Context, claim *resourcev1.ResourceClaim, c
 	}
 
 	var onSuccess OnSuccessCallback
-	classParams, _ := classParameters.(*cpucrd.ResourceClassParametersSpec)
+	classParams, _ := classParameters.(*cpucrd.CpuResourceClassParametersSpec)
 
 	switch claimParams := claimParameters.(type) {
 	case *cpucrd.CpuClaimParametersSpec:

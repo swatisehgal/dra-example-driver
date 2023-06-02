@@ -44,7 +44,7 @@ func (g *cpudriver) ValidateClaimParameters(claimParams *cpucrd.CpuClaimParamete
 	return nil
 }
 
-func (g *cpudriver) Allocate(crd *nascrd.NodeAllocationState, claim *resourcev1.ResourceClaim, claimParams *cpucrd.CpuClaimParametersSpec, class *resourcev1.ResourceClass, classParams *cpucrd.ResourceClassParametersSpec, selectedNode string) (OnSuccessCallback, error) {
+func (g *cpudriver) Allocate(crd *nascrd.NodeAllocationState, claim *resourcev1.ResourceClaim, claimParams *cpucrd.CpuClaimParametersSpec, class *resourcev1.ResourceClass, classParams *cpucrd.CpuResourceClassParametersSpec, selectedNode string) (OnSuccessCallback, error) {
 	claimUID := string(claim.UID)
 
 	if !g.PendingAllocatedClaims.Exists(claimUID, selectedNode) {
