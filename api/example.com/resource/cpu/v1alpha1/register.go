@@ -41,8 +41,8 @@ func Resource(resource string) schema.GroupResource {
 
 func addKnownTypes(scheme *runtime.Scheme) error {
 	scheme.AddKnownTypes(SchemeGroupVersion,
-		&ResourceClassParameters{},
-		&ResourceClassParametersList{},
+		&CpuResourceClassParameters{},
+		&CpuResourceClassParametersList{},
 		&CpuClaimParameters{},
 		&CpuClaimParametersList{},
 	)

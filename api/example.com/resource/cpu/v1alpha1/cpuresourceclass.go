@@ -20,15 +20,15 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// ResourceSelector allows one to match on a specific type of Device as part of the class.
-type ResourceSelector struct {
+// CpuResourceSelector allows one to match on a specific type of Device as part of the class.
+type CpuResourceSelector struct {
 	Type string `json:"type"`
 	Name string `json:"name"`
 }
 
-// ResourceClassParametersSpec is the spec for the DeviceClassParametersSpec CRD.
-type ResourceClassParametersSpec struct {
-	CPUResourceSelector []ResourceSelector `json:"cpuResourceSelector,omitempty"`
+// CpuResourceClassParametersSpec is the spec for the DeviceClassParametersSpec CRD.
+type CpuResourceClassParametersSpec struct {
+	CpuResourceSelector []CpuResourceSelector `json:"cpuResourceSelector,omitempty"`
 }
 
 // +genclient
@@ -37,20 +37,20 @@ type ResourceClassParametersSpec struct {
 // +k8s:openapi-gen=true
 // +kubebuilder:resource:scope=Cluster
 
-// ResourceClassParameters holds the set of parameters provided when creating a resource class for this driver.
-type ResourceClassParameters struct {
+// CpuResourceClassParameters holds the set of parameters provided when creating a resource class for this driver.
+type CpuResourceClassParameters struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec ResourceClassParametersSpec `json:"spec,omitempty"`
+	Spec CpuResourceClassParametersSpec `json:"spec,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// ResourceClassParametersList represents the "plural" of a ResourceClassParameters CRD object.
-type ResourceClassParametersList struct {
+// CpuResourceClassParametersList represents the "plural" of a ResourceClassParameters CRD object.
+type CpuResourceClassParametersList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
 
-	Items []ResourceClassParameters `json:"items"`
+	Items []CpuResourceClassParameters `json:"items"`
 }
