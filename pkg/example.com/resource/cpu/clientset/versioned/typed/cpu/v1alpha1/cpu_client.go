@@ -27,7 +27,7 @@ import (
 type CpuV1alpha1Interface interface {
 	RESTClient() rest.Interface
 	CpuClaimParametersesGetter
-	ResourceClassParametersesGetter
+	CpuResourceClassParametersesGetter
 }
 
 // CpuV1alpha1Client is used to interact with features provided by the cpu.resource.example.com group.
@@ -39,8 +39,8 @@ func (c *CpuV1alpha1Client) CpuClaimParameterses(namespace string) CpuClaimParam
 	return newCpuClaimParameterses(c, namespace)
 }
 
-func (c *CpuV1alpha1Client) ResourceClassParameterses() ResourceClassParametersInterface {
-	return newResourceClassParameterses(c)
+func (c *CpuV1alpha1Client) CpuResourceClassParameterses() CpuResourceClassParametersInterface {
+	return newCpuResourceClassParameterses(c)
 }
 
 // NewForConfig creates a new CpuV1alpha1Client for the given config.

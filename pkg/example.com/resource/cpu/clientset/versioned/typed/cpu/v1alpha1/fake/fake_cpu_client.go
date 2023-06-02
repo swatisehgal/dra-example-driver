@@ -32,8 +32,8 @@ func (c *FakeCpuV1alpha1) CpuClaimParameterses(namespace string) v1alpha1.CpuCla
 	return &FakeCpuClaimParameterses{c, namespace}
 }
 
-func (c *FakeCpuV1alpha1) ResourceClassParameterses() v1alpha1.ResourceClassParametersInterface {
-	return &FakeResourceClassParameterses{c}
+func (c *FakeCpuV1alpha1) CpuResourceClassParameterses() v1alpha1.CpuResourceClassParametersInterface {
+	return &FakeCpuResourceClassParameterses{c}
 }
 
 // RESTClient returns a RESTClient that is used to communicate

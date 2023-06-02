@@ -5,20 +5,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.9.2
   creationTimestamp: null
-  name: resourceclassparameters.cpu.resource.example.com
+  name: cpuresourceclassparameters.cpu.resource.example.com
 spec:
   group: cpu.resource.example.com
   names:
-    kind: ResourceClassParameters
-    listKind: ResourceClassParametersList
-    plural: resourceclassparameters
-    singular: resourceclassparameters
+    kind: CpuResourceClassParameters
+    listKind: CpuResourceClassParametersList
+    plural: cpuresourceclassparameters
+    singular: cpuresourceclassparameters
   scope: Cluster
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: ResourceClassParameters holds the set of parameters provided
+        description: CpuResourceClassParameters holds the set of parameters provided
           when creating a resource class for this driver.
         properties:
           apiVersion:
@@ -34,12 +34,12 @@ spec:
           metadata:
             type: object
           spec:
-            description: ResourceClassParametersSpec is the spec for the DeviceClassParametersSpec
+            description: CpuResourceClassParametersSpec is the spec for the DeviceClassParametersSpec
               CRD.
             properties:
               cpuResourceSelector:
                 items:
-                  description: ResourceSelector allows one to match on a specific
+                  description: CpuResourceSelector allows one to match on a specific
                     type of Device as part of the class.
                   properties:
                     name:
