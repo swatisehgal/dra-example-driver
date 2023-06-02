@@ -63,7 +63,7 @@ func (d driver) GetClassParameters(ctx context.Context, class *resourcev1.Resour
 	if class.ParametersRef.APIGroup != DriverAPIGroup {
 		return nil, fmt.Errorf("incorrect API group: %v", class.ParametersRef.APIGroup)
 	}
-	dc, err := d.clientset.CpuV1alpha1().CpuResourceClassParameterses().Get(ctx, class.ParametersRef.Name, metav1.GetOptions{})
+	dc, err := d.clientset.CpuV1alpha1().CpuResourceClassParameters().Get(ctx, class.ParametersRef.Name, metav1.GetOptions{})
 	if err != nil {
 		return nil, fmt.Errorf("error getting DeviceClassParameters called '%v': %v", class.ParametersRef.Name, err)
 	}
@@ -79,7 +79,7 @@ func (d driver) GetClaimParameters(ctx context.Context, claim *resourcev1.Resour
 	}
 	switch claim.Spec.ParametersRef.Kind {
 	case cpucrd.CpuClaimParametersKind:
-		gc, err := d.clientset.CpuV1alpha1().CpuClaimParameterses(claim.Namespace).Get(ctx, claim.Spec.ParametersRef.Name, metav1.GetOptions{})
+		gc, err := d.clientset.CpuV1alpha1().CpuClaimParameters(claim.Namespace).Get(ctx, claim.Spec.ParametersRef.Name, metav1.GetOptions{})
 		if err != nil {
 			return nil, fmt.Errorf("error getting CpuClaimParameters called '%v' in namespace '%v': %v", claim.Spec.ParametersRef.Name, claim.Namespace, err)
 		}
