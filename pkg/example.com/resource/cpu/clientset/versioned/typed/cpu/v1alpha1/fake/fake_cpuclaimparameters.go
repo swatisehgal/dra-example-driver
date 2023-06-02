@@ -30,20 +30,20 @@ import (
 	testing "k8s.io/client-go/testing"
 )
 
-// FakeCpuClaimParameterses implements CpuClaimParametersInterface
-type FakeCpuClaimParameterses struct {
+// FakeCpuClaimParameters implements CpuClaimParametersInterface
+type FakeCpuClaimParameters struct {
 	Fake *FakeCpuV1alpha1
 	ns   string
 }
 
-var cpuclaimparametersesResource = schema.GroupVersionResource{Group: "cpu.resource.example.com", Version: "v1alpha1", Resource: "cpuclaimparameterses"}
+var cpuclaimparametersResource = schema.GroupVersionResource{Group: "cpu.resource.example.com", Version: "v1alpha1", Resource: "cpuclaimparameters"}
 
-var cpuclaimparametersesKind = schema.GroupVersionKind{Group: "cpu.resource.example.com", Version: "v1alpha1", Kind: "CpuClaimParameters"}
+var cpuclaimparametersKind = schema.GroupVersionKind{Group: "cpu.resource.example.com", Version: "v1alpha1", Kind: "CpuClaimParameters"}
 
 // Get takes name of the cpuClaimParameters, and returns the corresponding cpuClaimParameters object, and an error if there is any.
-func (c *FakeCpuClaimParameterses) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.CpuClaimParameters, err error) {
+func (c *FakeCpuClaimParameters) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.CpuClaimParameters, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewGetAction(cpuclaimparametersesResource, c.ns, name), &v1alpha1.CpuClaimParameters{})
+		Invokes(testing.NewGetAction(cpuclaimparametersResource, c.ns, name), &v1alpha1.CpuClaimParameters{})
 
 	if obj == nil {
 		return nil, err
@@ -51,10 +51,10 @@ func (c *FakeCpuClaimParameterses) Get(ctx context.Context, name string, options
 	return obj.(*v1alpha1.CpuClaimParameters), err
 }
 
-// List takes label and field selectors, and returns the list of CpuClaimParameterses that match those selectors.
-func (c *FakeCpuClaimParameterses) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.CpuClaimParametersList, err error) {
+// List takes label and field selectors, and returns the list of CpuClaimParameters that match those selectors.
+func (c *FakeCpuClaimParameters) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.CpuClaimParametersList, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewListAction(cpuclaimparametersesResource, cpuclaimparametersesKind, c.ns, opts), &v1alpha1.CpuClaimParametersList{})
+		Invokes(testing.NewListAction(cpuclaimparametersResource, cpuclaimparametersKind, c.ns, opts), &v1alpha1.CpuClaimParametersList{})
 
 	if obj == nil {
 		return nil, err
@@ -73,17 +73,17 @@ func (c *FakeCpuClaimParameterses) List(ctx context.Context, opts v1.ListOptions
 	return list, err
 }
 
-// Watch returns a watch.Interface that watches the requested cpuClaimParameterses.
-func (c *FakeCpuClaimParameterses) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+// Watch returns a watch.Interface that watches the requested cpuClaimParameters.
+func (c *FakeCpuClaimParameters) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
-		InvokesWatch(testing.NewWatchAction(cpuclaimparametersesResource, c.ns, opts))
+		InvokesWatch(testing.NewWatchAction(cpuclaimparametersResource, c.ns, opts))
 
 }
 
 // Create takes the representation of a cpuClaimParameters and creates it.  Returns the server's representation of the cpuClaimParameters, and an error, if there is any.
-func (c *FakeCpuClaimParameterses) Create(ctx context.Context, cpuClaimParameters *v1alpha1.CpuClaimParameters, opts v1.CreateOptions) (result *v1alpha1.CpuClaimParameters, err error) {
+func (c *FakeCpuClaimParameters) Create(ctx context.Context, cpuClaimParameters *v1alpha1.CpuClaimParameters, opts v1.CreateOptions) (result *v1alpha1.CpuClaimParameters, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewCreateAction(cpuclaimparametersesResource, c.ns, cpuClaimParameters), &v1alpha1.CpuClaimParameters{})
+		Invokes(testing.NewCreateAction(cpuclaimparametersResource, c.ns, cpuClaimParameters), &v1alpha1.CpuClaimParameters{})
 
 	if obj == nil {
 		return nil, err
@@ -92,9 +92,9 @@ func (c *FakeCpuClaimParameterses) Create(ctx context.Context, cpuClaimParameter
 }
 
 // Update takes the representation of a cpuClaimParameters and updates it. Returns the server's representation of the cpuClaimParameters, and an error, if there is any.
-func (c *FakeCpuClaimParameterses) Update(ctx context.Context, cpuClaimParameters *v1alpha1.CpuClaimParameters, opts v1.UpdateOptions) (result *v1alpha1.CpuClaimParameters, err error) {
+func (c *FakeCpuClaimParameters) Update(ctx context.Context, cpuClaimParameters *v1alpha1.CpuClaimParameters, opts v1.UpdateOptions) (result *v1alpha1.CpuClaimParameters, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewUpdateAction(cpuclaimparametersesResource, c.ns, cpuClaimParameters), &v1alpha1.CpuClaimParameters{})
+		Invokes(testing.NewUpdateAction(cpuclaimparametersResource, c.ns, cpuClaimParameters), &v1alpha1.CpuClaimParameters{})
 
 	if obj == nil {
 		return nil, err
@@ -103,25 +103,25 @@ func (c *FakeCpuClaimParameterses) Update(ctx context.Context, cpuClaimParameter
 }
 
 // Delete takes name of the cpuClaimParameters and deletes it. Returns an error if one occurs.
-func (c *FakeCpuClaimParameterses) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (c *FakeCpuClaimParameters) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(cpuclaimparametersesResource, c.ns, name), &v1alpha1.CpuClaimParameters{})
+		Invokes(testing.NewDeleteAction(cpuclaimparametersResource, c.ns, name), &v1alpha1.CpuClaimParameters{})
 
 	return err
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *FakeCpuClaimParameterses) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewDeleteCollectionAction(cpuclaimparametersesResource, c.ns, listOpts)
+func (c *FakeCpuClaimParameters) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+	action := testing.NewDeleteCollectionAction(cpuclaimparametersResource, c.ns, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1alpha1.CpuClaimParametersList{})
 	return err
 }
 
 // Patch applies the patch and returns the patched cpuClaimParameters.
-func (c *FakeCpuClaimParameterses) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.CpuClaimParameters, err error) {
+func (c *FakeCpuClaimParameters) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.CpuClaimParameters, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewPatchSubresourceAction(cpuclaimparametersesResource, c.ns, name, pt, data, subresources...), &v1alpha1.CpuClaimParameters{})
+		Invokes(testing.NewPatchSubresourceAction(cpuclaimparametersResource, c.ns, name, pt, data, subresources...), &v1alpha1.CpuClaimParameters{})
 
 	if obj == nil {
 		return nil, err

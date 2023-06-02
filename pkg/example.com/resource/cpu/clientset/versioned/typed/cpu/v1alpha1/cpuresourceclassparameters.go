@@ -30,10 +30,10 @@ import (
 	rest "k8s.io/client-go/rest"
 )
 
-// CpuResourceClassParametersesGetter has a method to return a CpuResourceClassParametersInterface.
+// CpuResourceClassParametersGetter has a method to return a CpuResourceClassParametersInterface.
 // A group's client should implement this interface.
-type CpuResourceClassParametersesGetter interface {
-	CpuResourceClassParameterses() CpuResourceClassParametersInterface
+type CpuResourceClassParametersGetter interface {
+	CpuResourceClassParameters() CpuResourceClassParametersInterface
 }
 
 // CpuResourceClassParametersInterface has methods to work with CpuResourceClassParameters resources.
@@ -49,23 +49,23 @@ type CpuResourceClassParametersInterface interface {
 	CpuResourceClassParametersExpansion
 }
 
-// cpuResourceClassParameterses implements CpuResourceClassParametersInterface
-type cpuResourceClassParameterses struct {
+// cpuResourceClassParameters implements CpuResourceClassParametersInterface
+type cpuResourceClassParameters struct {
 	client rest.Interface
 }
 
-// newCpuResourceClassParameterses returns a CpuResourceClassParameterses
-func newCpuResourceClassParameterses(c *CpuV1alpha1Client) *cpuResourceClassParameterses {
-	return &cpuResourceClassParameterses{
+// newCpuResourceClassParameters returns a CpuResourceClassParameters
+func newCpuResourceClassParameters(c *CpuV1alpha1Client) *cpuResourceClassParameters {
+	return &cpuResourceClassParameters{
 		client: c.RESTClient(),
 	}
 }
 
 // Get takes name of the cpuResourceClassParameters, and returns the corresponding cpuResourceClassParameters object, and an error if there is any.
-func (c *cpuResourceClassParameterses) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.CpuResourceClassParameters, err error) {
+func (c *cpuResourceClassParameters) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.CpuResourceClassParameters, err error) {
 	result = &v1alpha1.CpuResourceClassParameters{}
 	err = c.client.Get().
-		Resource("cpuresourceclassparameterses").
+		Resource("cpuresourceclassparameters").
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
 		Do(ctx).
@@ -73,15 +73,15 @@ func (c *cpuResourceClassParameterses) Get(ctx context.Context, name string, opt
 	return
 }
 
-// List takes label and field selectors, and returns the list of CpuResourceClassParameterses that match those selectors.
-func (c *cpuResourceClassParameterses) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.CpuResourceClassParametersList, err error) {
+// List takes label and field selectors, and returns the list of CpuResourceClassParameters that match those selectors.
+func (c *cpuResourceClassParameters) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.CpuResourceClassParametersList, err error) {
 	var timeout time.Duration
 	if opts.TimeoutSeconds != nil {
 		timeout = time.Duration(*opts.TimeoutSeconds) * time.Second
 	}
 	result = &v1alpha1.CpuResourceClassParametersList{}
 	err = c.client.Get().
-		Resource("cpuresourceclassparameterses").
+		Resource("cpuresourceclassparameters").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
 		Do(ctx).
@@ -89,25 +89,25 @@ func (c *cpuResourceClassParameterses) List(ctx context.Context, opts v1.ListOpt
 	return
 }
 
-// Watch returns a watch.Interface that watches the requested cpuResourceClassParameterses.
-func (c *cpuResourceClassParameterses) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+// Watch returns a watch.Interface that watches the requested cpuResourceClassParameters.
+func (c *cpuResourceClassParameters) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	var timeout time.Duration
 	if opts.TimeoutSeconds != nil {
 		timeout = time.Duration(*opts.TimeoutSeconds) * time.Second
 	}
 	opts.Watch = true
 	return c.client.Get().
-		Resource("cpuresourceclassparameterses").
+		Resource("cpuresourceclassparameters").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
 		Watch(ctx)
 }
 
 // Create takes the representation of a cpuResourceClassParameters and creates it.  Returns the server's representation of the cpuResourceClassParameters, and an error, if there is any.
-func (c *cpuResourceClassParameterses) Create(ctx context.Context, cpuResourceClassParameters *v1alpha1.CpuResourceClassParameters, opts v1.CreateOptions) (result *v1alpha1.CpuResourceClassParameters, err error) {
+func (c *cpuResourceClassParameters) Create(ctx context.Context, cpuResourceClassParameters *v1alpha1.CpuResourceClassParameters, opts v1.CreateOptions) (result *v1alpha1.CpuResourceClassParameters, err error) {
 	result = &v1alpha1.CpuResourceClassParameters{}
 	err = c.client.Post().
-		Resource("cpuresourceclassparameterses").
+		Resource("cpuresourceclassparameters").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(cpuResourceClassParameters).
 		Do(ctx).
@@ -116,10 +116,10 @@ func (c *cpuResourceClassParameterses) Create(ctx context.Context, cpuResourceCl
 }
 
 // Update takes the representation of a cpuResourceClassParameters and updates it. Returns the server's representation of the cpuResourceClassParameters, and an error, if there is any.
-func (c *cpuResourceClassParameterses) Update(ctx context.Context, cpuResourceClassParameters *v1alpha1.CpuResourceClassParameters, opts v1.UpdateOptions) (result *v1alpha1.CpuResourceClassParameters, err error) {
+func (c *cpuResourceClassParameters) Update(ctx context.Context, cpuResourceClassParameters *v1alpha1.CpuResourceClassParameters, opts v1.UpdateOptions) (result *v1alpha1.CpuResourceClassParameters, err error) {
 	result = &v1alpha1.CpuResourceClassParameters{}
 	err = c.client.Put().
-		Resource("cpuresourceclassparameterses").
+		Resource("cpuresourceclassparameters").
 		Name(cpuResourceClassParameters.Name).
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(cpuResourceClassParameters).
@@ -129,9 +129,9 @@ func (c *cpuResourceClassParameterses) Update(ctx context.Context, cpuResourceCl
 }
 
 // Delete takes name of the cpuResourceClassParameters and deletes it. Returns an error if one occurs.
-func (c *cpuResourceClassParameterses) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (c *cpuResourceClassParameters) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	return c.client.Delete().
-		Resource("cpuresourceclassparameterses").
+		Resource("cpuresourceclassparameters").
 		Name(name).
 		Body(&opts).
 		Do(ctx).
@@ -139,13 +139,13 @@ func (c *cpuResourceClassParameterses) Delete(ctx context.Context, name string, 
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *cpuResourceClassParameterses) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+func (c *cpuResourceClassParameters) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
 	var timeout time.Duration
 	if listOpts.TimeoutSeconds != nil {
 		timeout = time.Duration(*listOpts.TimeoutSeconds) * time.Second
 	}
 	return c.client.Delete().
-		Resource("cpuresourceclassparameterses").
+		Resource("cpuresourceclassparameters").
 		VersionedParams(&listOpts, scheme.ParameterCodec).
 		Timeout(timeout).
 		Body(&opts).
@@ -154,10 +154,10 @@ func (c *cpuResourceClassParameterses) DeleteCollection(ctx context.Context, opt
 }
 
 // Patch applies the patch and returns the patched cpuResourceClassParameters.
-func (c *cpuResourceClassParameterses) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.CpuResourceClassParameters, err error) {
+func (c *cpuResourceClassParameters) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.CpuResourceClassParameters, err error) {
 	result = &v1alpha1.CpuResourceClassParameters{}
 	err = c.client.Patch(pt).
-		Resource("cpuresourceclassparameterses").
+		Resource("cpuresourceclassparameters").
 		Name(name).
 		SubResource(subresources...).
 		VersionedParams(&opts, scheme.ParameterCodec).

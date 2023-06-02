@@ -30,10 +30,10 @@ import (
 	rest "k8s.io/client-go/rest"
 )
 
-// CpuClaimParametersesGetter has a method to return a CpuClaimParametersInterface.
+// CpuClaimParametersGetter has a method to return a CpuClaimParametersInterface.
 // A group's client should implement this interface.
-type CpuClaimParametersesGetter interface {
-	CpuClaimParameterses(namespace string) CpuClaimParametersInterface
+type CpuClaimParametersGetter interface {
+	CpuClaimParameters(namespace string) CpuClaimParametersInterface
 }
 
 // CpuClaimParametersInterface has methods to work with CpuClaimParameters resources.
@@ -49,26 +49,26 @@ type CpuClaimParametersInterface interface {
 	CpuClaimParametersExpansion
 }
 
-// cpuClaimParameterses implements CpuClaimParametersInterface
-type cpuClaimParameterses struct {
+// cpuClaimParameters implements CpuClaimParametersInterface
+type cpuClaimParameters struct {
 	client rest.Interface
 	ns     string
 }
 
-// newCpuClaimParameterses returns a CpuClaimParameterses
-func newCpuClaimParameterses(c *CpuV1alpha1Client, namespace string) *cpuClaimParameterses {
-	return &cpuClaimParameterses{
+// newCpuClaimParameters returns a CpuClaimParameters
+func newCpuClaimParameters(c *CpuV1alpha1Client, namespace string) *cpuClaimParameters {
+	return &cpuClaimParameters{
 		client: c.RESTClient(),
 		ns:     namespace,
 	}
 }
 
 // Get takes name of the cpuClaimParameters, and returns the corresponding cpuClaimParameters object, and an error if there is any.
-func (c *cpuClaimParameterses) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.CpuClaimParameters, err error) {
+func (c *cpuClaimParameters) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.CpuClaimParameters, err error) {
 	result = &v1alpha1.CpuClaimParameters{}
 	err = c.client.Get().
 		Namespace(c.ns).
-		Resource("cpuclaimparameterses").
+		Resource("cpuclaimparameters").
 		Name(name).
 		VersionedParams(&options, scheme.ParameterCodec).
 		Do(ctx).
@@ -76,8 +76,8 @@ func (c *cpuClaimParameterses) Get(ctx context.Context, name string, options v1.
 	return
 }
 
-// List takes label and field selectors, and returns the list of CpuClaimParameterses that match those selectors.
-func (c *cpuClaimParameterses) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.CpuClaimParametersList, err error) {
+// List takes label and field selectors, and returns the list of CpuClaimParameters that match those selectors.
+func (c *cpuClaimParameters) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.CpuClaimParametersList, err error) {
 	var timeout time.Duration
 	if opts.TimeoutSeconds != nil {
 		timeout = time.Duration(*opts.TimeoutSeconds) * time.Second
@@ -85,7 +85,7 @@ func (c *cpuClaimParameterses) List(ctx context.Context, opts v1.ListOptions) (r
 	result = &v1alpha1.CpuClaimParametersList{}
 	err = c.client.Get().
 		Namespace(c.ns).
-		Resource("cpuclaimparameterses").
+		Resource("cpuclaimparameters").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
 		Do(ctx).
@@ -93,8 +93,8 @@ func (c *cpuClaimParameterses) List(ctx context.Context, opts v1.ListOptions) (r
 	return
 }
 
-// Watch returns a watch.Interface that watches the requested cpuClaimParameterses.
-func (c *cpuClaimParameterses) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+// Watch returns a watch.Interface that watches the requested cpuClaimParameters.
+func (c *cpuClaimParameters) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	var timeout time.Duration
 	if opts.TimeoutSeconds != nil {
 		timeout = time.Duration(*opts.TimeoutSeconds) * time.Second
@@ -102,18 +102,18 @@ func (c *cpuClaimParameterses) Watch(ctx context.Context, opts v1.ListOptions) (
 	opts.Watch = true
 	return c.client.Get().
 		Namespace(c.ns).
-		Resource("cpuclaimparameterses").
+		Resource("cpuclaimparameters").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Timeout(timeout).
 		Watch(ctx)
 }
 
 // Create takes the representation of a cpuClaimParameters and creates it.  Returns the server's representation of the cpuClaimParameters, and an error, if there is any.
-func (c *cpuClaimParameterses) Create(ctx context.Context, cpuClaimParameters *v1alpha1.CpuClaimParameters, opts v1.CreateOptions) (result *v1alpha1.CpuClaimParameters, err error) {
+func (c *cpuClaimParameters) Create(ctx context.Context, cpuClaimParameters *v1alpha1.CpuClaimParameters, opts v1.CreateOptions) (result *v1alpha1.CpuClaimParameters, err error) {
 	result = &v1alpha1.CpuClaimParameters{}
 	err = c.client.Post().
 		Namespace(c.ns).
-		Resource("cpuclaimparameterses").
+		Resource("cpuclaimparameters").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(cpuClaimParameters).
 		Do(ctx).
@@ -122,11 +122,11 @@ func (c *cpuClaimParameterses) Create(ctx context.Context, cpuClaimParameters *v
 }
 
 // Update takes the representation of a cpuClaimParameters and updates it. Returns the server's representation of the cpuClaimParameters, and an error, if there is any.
-func (c *cpuClaimParameterses) Update(ctx context.Context, cpuClaimParameters *v1alpha1.CpuClaimParameters, opts v1.UpdateOptions) (result *v1alpha1.CpuClaimParameters, err error) {
+func (c *cpuClaimParameters) Update(ctx context.Context, cpuClaimParameters *v1alpha1.CpuClaimParameters, opts v1.UpdateOptions) (result *v1alpha1.CpuClaimParameters, err error) {
 	result = &v1alpha1.CpuClaimParameters{}
 	err = c.client.Put().
 		Namespace(c.ns).
-		Resource("cpuclaimparameterses").
+		Resource("cpuclaimparameters").
 		Name(cpuClaimParameters.Name).
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Body(cpuClaimParameters).
@@ -136,10 +136,10 @@ func (c *cpuClaimParameterses) Update(ctx context.Context, cpuClaimParameters *v
 }
 
 // Delete takes name of the cpuClaimParameters and deletes it. Returns an error if one occurs.
-func (c *cpuClaimParameterses) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (c *cpuClaimParameters) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	return c.client.Delete().
 		Namespace(c.ns).
-		Resource("cpuclaimparameterses").
+		Resource("cpuclaimparameters").
 		Name(name).
 		Body(&opts).
 		Do(ctx).
@@ -147,14 +147,14 @@ func (c *cpuClaimParameterses) Delete(ctx context.Context, name string, opts v1.
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *cpuClaimParameterses) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+func (c *cpuClaimParameters) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
 	var timeout time.Duration
 	if listOpts.TimeoutSeconds != nil {
 		timeout = time.Duration(*listOpts.TimeoutSeconds) * time.Second
 	}
 	return c.client.Delete().
 		Namespace(c.ns).
-		Resource("cpuclaimparameterses").
+		Resource("cpuclaimparameters").
 		VersionedParams(&listOpts, scheme.ParameterCodec).
 		Timeout(timeout).
 		Body(&opts).
@@ -163,11 +163,11 @@ func (c *cpuClaimParameterses) DeleteCollection(ctx context.Context, opts v1.Del
 }
 
 // Patch applies the patch and returns the patched cpuClaimParameters.
-func (c *cpuClaimParameterses) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.CpuClaimParameters, err error) {
+func (c *cpuClaimParameters) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.CpuClaimParameters, err error) {
 	result = &v1alpha1.CpuClaimParameters{}
 	err = c.client.Patch(pt).
 		Namespace(c.ns).
-		Resource("cpuclaimparameterses").
+		Resource("cpuclaimparameters").
 		Name(name).
 		SubResource(subresources...).
 		VersionedParams(&opts, scheme.ParameterCodec).

@@ -28,12 +28,12 @@ type FakeCpuV1alpha1 struct {
 	*testing.Fake
 }
 
-func (c *FakeCpuV1alpha1) CpuClaimParameterses(namespace string) v1alpha1.CpuClaimParametersInterface {
-	return &FakeCpuClaimParameterses{c, namespace}
+func (c *FakeCpuV1alpha1) CpuClaimParameters(namespace string) v1alpha1.CpuClaimParametersInterface {
+	return &FakeCpuClaimParameters{c, namespace}
 }
 
-func (c *FakeCpuV1alpha1) CpuResourceClassParameterses() v1alpha1.CpuResourceClassParametersInterface {
-	return &FakeCpuResourceClassParameterses{c}
+func (c *FakeCpuV1alpha1) CpuResourceClassParameters() v1alpha1.CpuResourceClassParametersInterface {
+	return &FakeCpuResourceClassParameters{c}
 }
 
 // RESTClient returns a RESTClient that is used to communicate

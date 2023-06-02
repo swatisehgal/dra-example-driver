@@ -30,29 +30,29 @@ import (
 	testing "k8s.io/client-go/testing"
 )
 
-// FakeCpuResourceClassParameterses implements CpuResourceClassParametersInterface
-type FakeCpuResourceClassParameterses struct {
+// FakeCpuResourceClassParameters implements CpuResourceClassParametersInterface
+type FakeCpuResourceClassParameters struct {
 	Fake *FakeCpuV1alpha1
 }
 
-var cpuresourceclassparametersesResource = schema.GroupVersionResource{Group: "cpu.resource.example.com", Version: "v1alpha1", Resource: "cpuresourceclassparameterses"}
+var cpuresourceclassparametersResource = schema.GroupVersionResource{Group: "cpu.resource.example.com", Version: "v1alpha1", Resource: "cpuresourceclassparameters"}
 
-var cpuresourceclassparametersesKind = schema.GroupVersionKind{Group: "cpu.resource.example.com", Version: "v1alpha1", Kind: "CpuResourceClassParameters"}
+var cpuresourceclassparametersKind = schema.GroupVersionKind{Group: "cpu.resource.example.com", Version: "v1alpha1", Kind: "CpuResourceClassParameters"}
 
 // Get takes name of the cpuResourceClassParameters, and returns the corresponding cpuResourceClassParameters object, and an error if there is any.
-func (c *FakeCpuResourceClassParameterses) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.CpuResourceClassParameters, err error) {
+func (c *FakeCpuResourceClassParameters) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.CpuResourceClassParameters, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewRootGetAction(cpuresourceclassparametersesResource, name), &v1alpha1.CpuResourceClassParameters{})
+		Invokes(testing.NewRootGetAction(cpuresourceclassparametersResource, name), &v1alpha1.CpuResourceClassParameters{})
 	if obj == nil {
 		return nil, err
 	}
 	return obj.(*v1alpha1.CpuResourceClassParameters), err
 }
 
-// List takes label and field selectors, and returns the list of CpuResourceClassParameterses that match those selectors.
-func (c *FakeCpuResourceClassParameterses) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.CpuResourceClassParametersList, err error) {
+// List takes label and field selectors, and returns the list of CpuResourceClassParameters that match those selectors.
+func (c *FakeCpuResourceClassParameters) List(ctx context.Context, opts v1.ListOptions) (result *v1alpha1.CpuResourceClassParametersList, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewRootListAction(cpuresourceclassparametersesResource, cpuresourceclassparametersesKind, opts), &v1alpha1.CpuResourceClassParametersList{})
+		Invokes(testing.NewRootListAction(cpuresourceclassparametersResource, cpuresourceclassparametersKind, opts), &v1alpha1.CpuResourceClassParametersList{})
 	if obj == nil {
 		return nil, err
 	}
@@ -70,16 +70,16 @@ func (c *FakeCpuResourceClassParameterses) List(ctx context.Context, opts v1.Lis
 	return list, err
 }
 
-// Watch returns a watch.Interface that watches the requested cpuResourceClassParameterses.
-func (c *FakeCpuResourceClassParameterses) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
+// Watch returns a watch.Interface that watches the requested cpuResourceClassParameters.
+func (c *FakeCpuResourceClassParameters) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {
 	return c.Fake.
-		InvokesWatch(testing.NewRootWatchAction(cpuresourceclassparametersesResource, opts))
+		InvokesWatch(testing.NewRootWatchAction(cpuresourceclassparametersResource, opts))
 }
 
 // Create takes the representation of a cpuResourceClassParameters and creates it.  Returns the server's representation of the cpuResourceClassParameters, and an error, if there is any.
-func (c *FakeCpuResourceClassParameterses) Create(ctx context.Context, cpuResourceClassParameters *v1alpha1.CpuResourceClassParameters, opts v1.CreateOptions) (result *v1alpha1.CpuResourceClassParameters, err error) {
+func (c *FakeCpuResourceClassParameters) Create(ctx context.Context, cpuResourceClassParameters *v1alpha1.CpuResourceClassParameters, opts v1.CreateOptions) (result *v1alpha1.CpuResourceClassParameters, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewRootCreateAction(cpuresourceclassparametersesResource, cpuResourceClassParameters), &v1alpha1.CpuResourceClassParameters{})
+		Invokes(testing.NewRootCreateAction(cpuresourceclassparametersResource, cpuResourceClassParameters), &v1alpha1.CpuResourceClassParameters{})
 	if obj == nil {
 		return nil, err
 	}
@@ -87,9 +87,9 @@ func (c *FakeCpuResourceClassParameterses) Create(ctx context.Context, cpuResour
 }
 
 // Update takes the representation of a cpuResourceClassParameters and updates it. Returns the server's representation of the cpuResourceClassParameters, and an error, if there is any.
-func (c *FakeCpuResourceClassParameterses) Update(ctx context.Context, cpuResourceClassParameters *v1alpha1.CpuResourceClassParameters, opts v1.UpdateOptions) (result *v1alpha1.CpuResourceClassParameters, err error) {
+func (c *FakeCpuResourceClassParameters) Update(ctx context.Context, cpuResourceClassParameters *v1alpha1.CpuResourceClassParameters, opts v1.UpdateOptions) (result *v1alpha1.CpuResourceClassParameters, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewRootUpdateAction(cpuresourceclassparametersesResource, cpuResourceClassParameters), &v1alpha1.CpuResourceClassParameters{})
+		Invokes(testing.NewRootUpdateAction(cpuresourceclassparametersResource, cpuResourceClassParameters), &v1alpha1.CpuResourceClassParameters{})
 	if obj == nil {
 		return nil, err
 	}
@@ -97,24 +97,24 @@ func (c *FakeCpuResourceClassParameterses) Update(ctx context.Context, cpuResour
 }
 
 // Delete takes name of the cpuResourceClassParameters and deletes it. Returns an error if one occurs.
-func (c *FakeCpuResourceClassParameterses) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
+func (c *FakeCpuResourceClassParameters) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewRootDeleteAction(cpuresourceclassparametersesResource, name), &v1alpha1.CpuResourceClassParameters{})
+		Invokes(testing.NewRootDeleteAction(cpuresourceclassparametersResource, name), &v1alpha1.CpuResourceClassParameters{})
 	return err
 }
 
 // DeleteCollection deletes a collection of objects.
-func (c *FakeCpuResourceClassParameterses) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
-	action := testing.NewRootDeleteCollectionAction(cpuresourceclassparametersesResource, listOpts)
+func (c *FakeCpuResourceClassParameters) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
+	action := testing.NewRootDeleteCollectionAction(cpuresourceclassparametersResource, listOpts)
 
 	_, err := c.Fake.Invokes(action, &v1alpha1.CpuResourceClassParametersList{})
 	return err
 }
 
 // Patch applies the patch and returns the patched cpuResourceClassParameters.
-func (c *FakeCpuResourceClassParameterses) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.CpuResourceClassParameters, err error) {
+func (c *FakeCpuResourceClassParameters) Patch(ctx context.Context, name string, pt types.PatchType, data []byte, opts v1.PatchOptions, subresources ...string) (result *v1alpha1.CpuResourceClassParameters, err error) {
 	obj, err := c.Fake.
-		Invokes(testing.NewRootPatchSubresourceAction(cpuresourceclassparametersesResource, name, pt, data, subresources...), &v1alpha1.CpuResourceClassParameters{})
+		Invokes(testing.NewRootPatchSubresourceAction(cpuresourceclassparametersResource, name, pt, data, subresources...), &v1alpha1.CpuResourceClassParameters{})
 	if obj == nil {
 		return nil, err
 	}
