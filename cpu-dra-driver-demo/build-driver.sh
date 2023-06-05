@@ -38,5 +38,5 @@ fi
 
 set +x
 printf '\033[0;32m'
-echo "Driver build complete: ${DRIVER_IMAGE}"
+echo "Driver build complete: ${CPU_DRA_DRIVER_IMAGE}"
 printf '\033[0m'

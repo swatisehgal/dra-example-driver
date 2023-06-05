@@ -26,8 +26,8 @@ SCRIPTS_DIR="$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)"
 : ${CPU_DRIVER_NAME:=cpu-dra-driver}
 
 # The registry, image and tag for the example driver
-: ${DRIVER_IMAGE_REGISTRY:="quay.io/swsehgal"}
-: ${DRIVER_IMAGE_NAME:="${CPU_DRIVER_NAME}"}
+: ${CPU_DRA_DRIVER_REGISTRY:="quay.io/swsehgal"}
+: ${CPU_DRA_DRIVER_IMAGE_NAME:="${CPU_DRIVER_NAME}"}
 : ${DRIVER_IMAGE_TAG:="v0.1.0"}
 : ${DRIVER_IMAGE_PLATFORM:="ubuntu22.04"}
 
@@ -46,7 +46,7 @@ SCRIPTS_DIR="$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)"
 : ${KIND_CLUSTER_CONFIG_PATH:="${SCRIPTS_DIR}/kind-cluster-config.yaml"}
 
 # The derived name of the driver image to build
-DRIVER_IMAGE="${DRIVER_IMAGE_REGISTRY}/${DRIVER_IMAGE_NAME}:${DRIVER_IMAGE_TAG}"
+CPU_DRA_DRIVER_IMAGE="${CPU_DRA_DRIVER_REGISTRY}/${CPU_DRA_DRIVER_IMAGE_NAME}:${DRIVER_IMAGE_TAG}"
 
 # The derived name of the kind image to build
 KIND_IMAGE="kindest/node:${KIND_K8S_TAG}-${KIND_CONTAINERD_TAG}"

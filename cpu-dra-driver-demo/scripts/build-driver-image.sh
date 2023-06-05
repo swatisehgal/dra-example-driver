@@ -38,10 +38,10 @@ trap cleanup EXIT
 cd ${CURRENT_DIR}/../..
 
 # Set build variables
-export REGISTRY="${DRIVER_IMAGE_REGISTRY}"
-export IMAGE="${DRIVER_IMAGE_NAME}"
+export REGISTRY="${CPU_DRA_DRIVER_REGISTRY}"
+export IMAGE="${CPU_DRA_DRIVER_IMAGE_NAME}"
 export VERSION="${DRIVER_IMAGE_TAG}"
 
 # Regenerate the CRDs and build the container image
-make docker-generate
-make -f deployments/container/Makefile "${DRIVER_IMAGE_PLATFORM}"
+CMD_TARGETS=cpu-dra-driver-controller,cpu-dra-driver-controller IMAGE_NAME=quay.io/swsehgal/cpu-dra-driver  BUILDIMAGE=cpu-dra-driver-build:golang1.20.3 make docker-generate
+CMD_TARGETS=cpu-dra-driver-controller,cpu-dra-driver-controller IMAGE_NAME=quay.io/swsehgal/cpu-dra-driver  BUILDIMAGE=cpu-dra-driver-build:golang1.20.3 make -f deployments/container/Makefile "${DRIVER_IMAGE_PLATFORM}"

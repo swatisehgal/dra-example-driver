@@ -29,4 +29,4 @@ source "${CURRENT_DIR}/common.sh"
 
 kind load docker-image \
 	--name "${KIND_CLUSTER_NAME}" \
-	"${DRIVER_IMAGE}"
+	"${CPU_DRA_DRIVER_IMAGE}"
