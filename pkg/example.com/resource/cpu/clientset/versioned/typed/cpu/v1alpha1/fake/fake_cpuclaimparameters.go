@@ -105,7 +105,7 @@ func (c *FakeCpuClaimParameters) Update(ctx context.Context, cpuClaimParameters 
 // Delete takes name of the cpuClaimParameters and deletes it. Returns an error if one occurs.
 func (c *FakeCpuClaimParameters) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewDeleteAction(cpuclaimparametersResource, c.ns, name), &v1alpha1.CpuClaimParameters{})
+		Invokes(testing.NewDeleteActionWithOptions(cpuclaimparametersResource, c.ns, name, opts), &v1alpha1.CpuClaimParameters{})
 
 	return err
 }

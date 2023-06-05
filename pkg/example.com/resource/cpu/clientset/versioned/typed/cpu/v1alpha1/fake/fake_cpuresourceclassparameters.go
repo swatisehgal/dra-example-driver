@@ -99,7 +99,7 @@ func (c *FakeCpuResourceClassParameters) Update(ctx context.Context, cpuResource
 // Delete takes name of the cpuResourceClassParameters and deletes it. Returns an error if one occurs.
 func (c *FakeCpuResourceClassParameters) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
 	_, err := c.Fake.
-		Invokes(testing.NewRootDeleteAction(cpuresourceclassparametersResource, name), &v1alpha1.CpuResourceClassParameters{})
+		Invokes(testing.NewRootDeleteActionWithOptions(cpuresourceclassparametersResource, name, opts), &v1alpha1.CpuResourceClassParameters{})
 	return err
 }
 
