@@ -39,7 +39,7 @@ spec:
           {{- toYaml .Values.kubeletPlugin.containers.init.securityContext | nindent 10 }}
         image: {{ include "cpu-dra-driver.fullimage" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ["set-nas-status", "--status", "NotReady"]
+        command: ["set-cpu-dra-driver-nas-status", "--status", "NotReady"]
         resources:
           {{- toYaml .Values.kubeletPlugin.containers.init.resources | nindent 10 }}
         env:
@@ -57,7 +57,7 @@ spec:
           {{- toYaml .Values.kubeletPlugin.containers.plugin.securityContext | nindent 10 }}
         image: {{ include "cpu-dra-driver.fullimage" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ["dra-example-kubeletplugin"]
+        command: ["cpu-dra-driver-kubeletplugin"]
         resources:
           {{- toYaml .Values.kubeletPlugin.containers.plugin.resources | nindent 10 }}
         env:
@@ -81,7 +81,7 @@ spec:
         lifecycle:
           preStop:
             exec: 
-              command: ["set-nas-status", "--status", "NotReady"]
+              command: ["set-cpu-dra-driver-nas-status", "--status", "NotReady"]
       volumes:
       - name: plugins-registry
         hostPath:

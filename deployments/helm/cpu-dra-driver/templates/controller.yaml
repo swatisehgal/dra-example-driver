@@ -36,7 +36,7 @@ spec:
           {{- toYaml .Values.controller.containers.controller.securityContext | nindent 10 }}
         image: {{ include "cpu-dra-driver.fullimage" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ["dra-example-controller"]
+        command: ["cpu-dra-driver-controller"]
         resources:
           {{- toYaml .Values.controller.containers.controller.resources | nindent 10 }}
         env:

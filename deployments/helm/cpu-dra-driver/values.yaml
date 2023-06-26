@@ -11,7 +11,7 @@ allowDefaultNamespace: false
 
 imagePullSecrets: []
 image:
-  repository: registry.example.com/cpu-dra-driver
+  repository: quay.io/swsehgal/cpu-dra-driver
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
