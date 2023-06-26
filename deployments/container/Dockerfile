@@ -34,6 +34,9 @@ LABEL release="N/A"
 LABEL summary="Example DRA resource driver for Kubernetes"
 LABEL description="See summary"
 
-COPY --from=build /artifacts/dra-example-controller    /usr/bin/dra-example-controller
-COPY --from=build /artifacts/dra-example-kubeletplugin /usr/bin/dra-example-kubeletplugin
-COPY --from=build /artifacts/set-nas-status            /usr/bin/set-nas-status
+COPY --from=build /artifacts/dra-example-controller        /usr/bin/dra-example-controller
+COPY --from=build /artifacts/dra-example-kubeletplugin     /usr/bin/dra-example-kubeletplugin
+COPY --from=build /artifacts/set-nas-status                /usr/bin/set-nas-status
+COPY --from=build /artifacts/cpu-dra-driver-controller     /usr/bin/cpu-dra-driver-controller
+COPY --from=build /artifacts/cpu-dra-driver-kubeletplugin  /usr/bin/cpu-dra-driver-kubeletplugin
+COPY --from=build /artifacts/set-cpu-dra-driver-nas-status /usr/bin/set-cpu-dra-driver-nas-status
