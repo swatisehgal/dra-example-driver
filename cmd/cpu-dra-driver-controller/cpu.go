@@ -100,7 +100,6 @@ func (g *cpudriver) UnsuitableNode(crd *nascrd.NodeAllocationState, pod *corev1.
 		}
 
 		g.PendingAllocatedClaims.Set(claimUID, potentialNode, allocatedDevices)
-		crd.Spec.AllocatedClaims[claimUID] = allocatedDevices
 	}
 
 	return nil
