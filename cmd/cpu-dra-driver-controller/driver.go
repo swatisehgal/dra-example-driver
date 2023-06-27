@@ -88,8 +88,9 @@ func (d driver) GetClaimParameters(ctx context.Context, claim *resourcev1.Resour
 			return nil, fmt.Errorf("error validating CpuClaimParameters called '%v' in namespace '%v': %v", claim.Spec.ParametersRef.Name, claim.Namespace, err)
 		}
 		return &gc.Spec, nil
+	default:
+		return nil, fmt.Errorf("unknown ResourceClaim.ParametersRef.Kind: %v", claim.Spec.ParametersRef.Kind)
 	}
-	return nil, fmt.Errorf("unknown ResourceClaim.ParametersRef.Kind: %v", claim.Spec.ParametersRef.Kind)
 }
 
 func (d driver) Allocate(ctx context.Context, claim *resourcev1.ResourceClaim, claimParameters interface{}, class *resourcev1.ResourceClass, classParameters interface{}, selectedNode string) (*resourcev1.AllocationResult, error) {
@@ -244,18 +245,20 @@ func (d driver) unsuitableNode(ctx context.Context, pod *corev1.Pod, allcas []*c
 
 	perKindCas := make(map[string][]*controller.ClaimAllocation)
 	for _, ca := range allcas {
-		var kind string
 		switch ca.ClaimParameters.(type) {
 		case *cpucrd.CpuClaimParametersSpec:
-			kind = cpucrd.CpuClaimParametersKind
+			perKindCas[cpucrd.CpuClaimParametersKind] = append(perKindCas[cpucrd.CpuClaimParametersKind], ca)
+		default:
+			return fmt.Errorf("unknown ResourceClaimParameters kind: %T", ca.ClaimParameters)
 		}
-		perKindCas[kind] = append(perKindCas[kind], ca)
 	}
 	for _, kind := range []string{cpucrd.CpuClaimParametersKind} {
 		var err error
 		switch kind {
 		case cpucrd.CpuClaimParametersKind:
 			err = d.cpu.UnsuitableNode(crd, pod, perKindCas[kind], allcas, potentialNode)
+		default:
+			err = fmt.Errorf("unknown ResourceClaimParameters kind: %+v", kind)
 		}
 		if err != nil {
 			return fmt.Errorf("error processing '%v': %v", kind, err)

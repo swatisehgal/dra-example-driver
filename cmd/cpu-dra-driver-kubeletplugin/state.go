@@ -92,7 +92,11 @@ func (s *ResourceState) Prepare(claimUID string, allocation nascrd.AllocatedReso
 	defer s.Unlock()
 
 	if s.prepared[claimUID] != nil {
-		return s.cdi.GetClaimDevices(claimUID, s.prepared[claimUID]), nil
+		cdiDevices, err := s.cdi.GetClaimDevices(claimUID, s.prepared[claimUID])
+		if err != nil {
+			return nil, fmt.Errorf("unable to get CDI devices names: %v", err)
+		}
+		return cdiDevices, nil
 	}
 
 	prepared := &PreparedResources{}
@@ -101,6 +105,8 @@ func (s *ResourceState) Prepare(claimUID string, allocation nascrd.AllocatedReso
 	switch allocation.Type() {
 	case nascrd.CpuResourceType:
 		prepared.Cpu, err = s.prepareGpus(claimUID, allocation.CpuResource)
+	default:
+		err = fmt.Errorf("unknown device type: %v", allocation.Type())
 	}
 	if err != nil {
 		return nil, fmt.Errorf("allocation failed: %v", err)
@@ -113,7 +119,11 @@ func (s *ResourceState) Prepare(claimUID string, allocation nascrd.AllocatedReso
 
 	s.prepared[claimUID] = prepared
 
-	return s.cdi.GetClaimDevices(claimUID, s.prepared[claimUID]), nil
+	cdiDevices, err := s.cdi.GetClaimDevices(claimUID, s.prepared[claimUID])
+	if err != nil {
+		return nil, fmt.Errorf("unable to get CDI devices names: %v", err)
+	}
+	return cdiDevices, nil
 }
 
 func (s *ResourceState) Unprepare(claimUID string) error {
@@ -130,6 +140,8 @@ func (s *ResourceState) Unprepare(claimUID string) error {
 		if err != nil {
 			return fmt.Errorf("unprepare failed: %v", err)
 		}
+	default:
+		return fmt.Errorf("unknown device type: %v", s.prepared[claimUID].Type())
 	}
 
 	err := s.cdi.DeleteClaimSpecFile(claimUID)
@@ -142,14 +154,22 @@ func (s *ResourceState) Unprepare(claimUID string) error {
 	return nil
 }
 
-func (s *ResourceState) GetUpdatedSpec(inspec *nascrd.NodeAllocationStateSpec) *nascrd.NodeAllocationStateSpec {
+func (s *ResourceState) GetUpdatedSpec(inspec *nascrd.NodeAllocationStateSpec) (*nascrd.NodeAllocationStateSpec, error) {
 	s.Lock()
 	defer s.Unlock()
 
 	outspec := inspec.DeepCopy()
-	s.syncAllocatableDevicesToCRDSpec(outspec)
-	s.syncPreparedDevicesToCRDSpec(outspec)
-	return outspec
+	err := s.syncAllocatableDevicesToCRDSpec(outspec)
+	if err != nil {
+		return nil, fmt.Errorf("synching allocatable devices to CR spec: %v", err)
+	}
+
+	err = s.syncPreparedDevicesToCRDSpec(outspec)
+	if err != nil {
+		return nil, fmt.Errorf("synching prepared devices to CR spec: %v", err)
+	}
+
+	return outspec, nil
 }
 
 func (s *ResourceState) prepareGpus(claimUID string, allocated *nascrd.AllocatedCpus) (*PreparedCpus, error) {
@@ -172,7 +192,7 @@ func (s *ResourceState) unprepareGpus(claimUID string, devices *PreparedResource
 	return nil
 }
 
-func (s *ResourceState) syncAllocatableDevicesToCRDSpec(spec *nascrd.NodeAllocationStateSpec) {
+func (s *ResourceState) syncAllocatableDevicesToCRDSpec(spec *nascrd.NodeAllocationStateSpec) error {
 	gpus := make(map[string]nascrd.AllocatableResource)
 	for _, device := range s.allocatable {
 		gpus[device.uuid] = nascrd.AllocatableResource{
@@ -189,6 +209,8 @@ func (s *ResourceState) syncAllocatableDevicesToCRDSpec(spec *nascrd.NodeAllocat
 	}
 
 	spec.AllocatableResources = allocatable
+
+	return nil
 }
 
 func (s *ResourceState) syncPreparedDevicesFromCRDSpec(spec *nascrd.NodeAllocationStateSpec) error {
@@ -202,14 +224,18 @@ func (s *ResourceState) syncPreparedDevicesFromCRDSpec(spec *nascrd.NodeAllocati
 			for _, d := range devices.CpuResource.Resources {
 				prepared[claim].Cpu.Resources = append(prepared[claim].Cpu.Resources, gpus[d.UUID].CpuInfo)
 			}
+		default:
+			return fmt.Errorf("unknown device type: %v", devices.Type())
 		}
+
 	}
 
 	s.prepared = prepared
+
 	return nil
 }
 
-func (s *ResourceState) syncPreparedDevicesToCRDSpec(spec *nascrd.NodeAllocationStateSpec) {
+func (s *ResourceState) syncPreparedDevicesToCRDSpec(spec *nascrd.NodeAllocationStateSpec) error {
 	outcas := make(map[string]nascrd.PreparedResources)
 	for claim, resources := range s.prepared {
 		var prepared nascrd.PreparedResources
@@ -222,8 +248,11 @@ func (s *ResourceState) syncPreparedDevicesToCRDSpec(spec *nascrd.NodeAllocation
 				}
 				prepared.CpuResource.Resources = append(prepared.CpuResource.Resources, outdevice)
 			}
+		default:
+			return fmt.Errorf("unknown device type: %v", resources.Type())
 		}
 		outcas[claim] = prepared
 	}
 	spec.PreparedClaims = outcas
+	return nil
 }

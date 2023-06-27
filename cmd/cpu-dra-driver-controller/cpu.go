@@ -112,6 +112,8 @@ func (g *cpudriver) allocate(crd *nascrd.NodeAllocationState, pod *corev1.Pod, g
 		switch resource.Type() {
 		case nascrd.CpuResourceType:
 			available[resource.CpuResource.UUID] = resource.CpuResource
+		default:
+			// skip other resources
 		}
 	}
 
@@ -121,6 +123,8 @@ func (g *cpudriver) allocate(crd *nascrd.NodeAllocationState, pod *corev1.Pod, g
 			for _, resource := range allocation.CpuResource.Resources {
 				delete(available, resource.UUID)
 			}
+		default:
+			// skip other resources
 		}
 	}
 
