@@ -35,10 +35,6 @@ SCRIPTS_DIR="$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)"
 # From https://github.com/kubernetes/kubernetes/tags
 : ${KIND_K8S_TAG:="v1.27.1"}
 
-# The containerd tag to patch the kind image with
-# From https://github.com/kind-ci/containerd-nightlies/releases
-: ${KIND_CONTAINERD_TAG:="containerd-1.7.0-79-g2503bef58"}
-
 # The name of the kind cluster to create
 : ${KIND_CLUSTER_NAME:="${CPU_DRIVER_NAME}-cluster"}
 
@@ -46,8 +42,9 @@ SCRIPTS_DIR="$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)"
 : ${KIND_CLUSTER_CONFIG_PATH:="${SCRIPTS_DIR}/kind-cluster-config.yaml"}
 
 # The derived name of the driver image to build
-CPU_DRA_DRIVER_IMAGE="${CPU_DRA_DRIVER_REGISTRY}/${CPU_DRA_DRIVER_IMAGE_NAME}:${DRIVER_IMAGE_TAG}"
+: ${CPU_DRA_DRIVER_IMAGE:="${CPU_DRA_DRIVER_REGISTRY}/${CPU_DRA_DRIVER_IMAGE_NAME}:${DRIVER_IMAGE_TAG}"}
 
 # The derived name of the kind image to build
-KIND_IMAGE="kindest/node:${KIND_K8S_TAG}-${KIND_CONTAINERD_TAG}"
-
+: ${KIND_IMAGE_BASE_TAG:="v20230515-01914134-containerd_v1.7.1"}
+: ${KIND_IMAGE_BASE:="gcr.io/k8s-staging-kind/base:${KIND_IMAGE_BASE_TAG}"}
+: ${KIND_IMAGE:="kindest/node:${KIND_K8S_TAG}-${KIND_IMAGE_BASE_TAG}"}
