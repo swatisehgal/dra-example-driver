@@ -18,6 +18,6 @@
 
 package v1alpha1
 
-type CpuClaimParametersExpansion interface{}
+type CPUClaimParametersExpansion interface{}
 
-type CpuResourceClassParametersExpansion interface{}
+type CPUResourceClassParametersExpansion interface{}

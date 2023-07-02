@@ -43,7 +43,7 @@ spec:
                     on a node.
                   properties:
                     cpuResource:
-                      description: AllocatableCpu represents an allocatable CPU on
+                      description: AllocatableCPU represents an allocatable CPU on
                         a node.
                       properties:
                         productName:
@@ -61,11 +61,11 @@ spec:
                   description: AllocatedDevices represents a set of allocated devices.
                   properties:
                     cpuResource:
-                      description: AllocatedCpus represents a set of allocated GPUs.
+                      description: AllocatedCPUs represents a set of allocated GPUs.
                       properties:
                         resources:
                           items:
-                            description: AllocatedCpu represents an allocated GPU.
+                            description: AllocatedCPU represents an allocated GPU.
                             properties:
                               uuid:
                                 type: string
@@ -82,12 +82,12 @@ spec:
                     on a node.
                   properties:
                     cpuResource:
-                      description: PreparedCpus represents a set of prepared GPUs
+                      description: PreparedCPUs represents a set of prepared GPUs
                         on a node.
                       properties:
                         resources:
                           items:
-                            description: PreparedCpu represents a prepared GPU on
+                            description: PreparedCPU represents a prepared GPU on
                               a node.
                             properties:
                               uuid:

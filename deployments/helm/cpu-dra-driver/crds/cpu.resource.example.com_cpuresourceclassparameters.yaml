@@ -9,8 +9,8 @@ metadata:
 spec:
   group: cpu.resource.example.com
   names:
-    kind: CpuResourceClassParameters
-    listKind: CpuResourceClassParametersList
+    kind: CPUResourceClassParameters
+    listKind: CPUResourceClassParametersList
     plural: cpuresourceclassparameters
     singular: cpuresourceclassparameters
   scope: Cluster
@@ -18,7 +18,7 @@ spec:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: CpuResourceClassParameters holds the set of parameters provided
+        description: CPUResourceClassParameters holds the set of parameters provided
           when creating a resource class for this driver.
         properties:
           apiVersion:
@@ -34,12 +34,12 @@ spec:
           metadata:
             type: object
           spec:
-            description: CpuResourceClassParametersSpec is the spec for the DeviceClassParametersSpec
+            description: CPUResourceClassParametersSpec is the spec for the DeviceClassParametersSpec
               CRD.
             properties:
               cpuResourceSelector:
                 items:
-                  description: CpuResourceSelector allows one to match on a specific
+                  description: CPUResourceSelector allows one to match on a specific
                     type of Device as part of the class.
                   properties:
                     name:

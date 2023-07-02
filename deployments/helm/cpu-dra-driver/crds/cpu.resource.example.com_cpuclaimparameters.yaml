@@ -9,8 +9,8 @@ metadata:
 spec:
   group: cpu.resource.example.com
   names:
-    kind: CpuClaimParameters
-    listKind: CpuClaimParametersList
+    kind: CPUClaimParameters
+    listKind: CPUClaimParametersList
     plural: cpuclaimparameters
     singular: cpuclaimparameters
   scope: Namespaced
@@ -18,7 +18,7 @@ spec:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: CpuClaimParameters holds the set of parameters provided when
+        description: CPUClaimParameters holds the set of parameters provided when
           creating a resource claim for a CPU.
         properties:
           apiVersion:
@@ -34,7 +34,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: CpuClaimParametersSpec is the spec for the CpuClaimParameters
+            description: CPUClaimParametersSpec is the spec for the CPUClaimParameters
               CRD.
             properties:
               count:
