@@ -26,28 +26,28 @@ import (
 type AllocatableResources map[string]*AllocatableResourceInfo
 type PreparedClaims map[string]*PreparedResources
 
-type CpuInfo struct {
+type CPUInfo struct {
 	uuid  string
 	model string
 }
 
-type PreparedCpus struct {
-	Resources []*CpuInfo
+type PreparedCPUs struct {
+	Resources []*CPUInfo
 }
 
 type PreparedResources struct {
-	Cpu *PreparedCpus
+	CPU *PreparedCPUs
 }
 
 func (d PreparedResources) Type() string {
-	if d.Cpu != nil {
-		return nascrd.CpuResourceType
+	if d.CPU != nil {
+		return nascrd.CPUResourceType
 	}
 	return nascrd.UnknownCPUResourceType
 }
 
 type AllocatableResourceInfo struct {
-	*CpuInfo
+	*CPUInfo
 }
 
 type ResourceState struct {
@@ -103,8 +103,8 @@ func (s *ResourceState) Prepare(claimUID string, allocation nascrd.AllocatedReso
 
 	var err error
 	switch allocation.Type() {
-	case nascrd.CpuResourceType:
-		prepared.Cpu, err = s.prepareCpus(claimUID, allocation.CpuResource)
+	case nascrd.CPUResourceType:
+		prepared.CPU, err = s.prepareCPUs(claimUID, allocation.CPUResource)
 	default:
 		err = fmt.Errorf("unknown device type: %v", allocation.Type())
 	}
@@ -135,8 +135,8 @@ func (s *ResourceState) Unprepare(claimUID string) error {
 	}
 
 	switch s.prepared[claimUID].Type() {
-	case nascrd.CpuResourceType:
-		err := s.unprepareCpus(claimUID, s.prepared[claimUID])
+	case nascrd.CPUResourceType:
+		err := s.unprepareCPUs(claimUID, s.prepared[claimUID])
 		if err != nil {
 			return fmt.Errorf("unprepare failed: %v", err)
 		}
@@ -172,11 +172,11 @@ func (s *ResourceState) GetUpdatedSpec(inspec *nascrd.NodeAllocationStateSpec) (
 	return outspec, nil
 }
 
-func (s *ResourceState) prepareCpus(claimUID string, allocated *nascrd.AllocatedCpus) (*PreparedCpus, error) {
-	prepared := &PreparedCpus{}
+func (s *ResourceState) prepareCPUs(claimUID string, allocated *nascrd.AllocatedCPUs) (*PreparedCPUs, error) {
+	prepared := &PreparedCPUs{}
 
 	for _, device := range allocated.Resources {
-		cpuInfo := s.allocatable[device.UUID].CpuInfo
+		cpuInfo := s.allocatable[device.UUID].CPUInfo
 
 		if _, exists := s.allocatable[device.UUID]; !exists {
 			return nil, fmt.Errorf("requested cpu does not exist: %v", device.UUID)
@@ -188,7 +188,7 @@ func (s *ResourceState) prepareCpus(claimUID string, allocated *nascrd.Allocated
 	return prepared, nil
 }
 
-func (s *ResourceState) unprepareCpus(claimUID string, devices *PreparedResources) error {
+func (s *ResourceState) unprepareCPUs(claimUID string, devices *PreparedResources) error {
 	return nil
 }
 
@@ -196,7 +196,7 @@ func (s *ResourceState) syncAllocatableDevicesToCRDSpec(spec *nascrd.NodeAllocat
 	cpus := make(map[string]nascrd.AllocatableResource)
 	for _, device := range s.allocatable {
 		cpus[device.uuid] = nascrd.AllocatableResource{
-			CpuResource: &nascrd.AllocatableCpu{
+			CPUResource: &nascrd.AllocatableCPU{
 				UUID:        device.uuid,
 				ProductName: device.model,
 			},
@@ -219,10 +219,10 @@ func (s *ResourceState) syncPreparedDevicesFromCRDSpec(spec *nascrd.NodeAllocati
 	prepared := make(PreparedClaims)
 	for claim, devices := range spec.PreparedClaims {
 		switch devices.Type() {
-		case nascrd.CpuResourceType:
+		case nascrd.CPUResourceType:
 			prepared[claim] = &PreparedResources{}
-			for _, d := range devices.CpuResource.Resources {
-				prepared[claim].Cpu.Resources = append(prepared[claim].Cpu.Resources, cpus[d.UUID].CpuInfo)
+			for _, d := range devices.CPUResource.Resources {
+				prepared[claim].CPU.Resources = append(prepared[claim].CPU.Resources, cpus[d.UUID].CPUInfo)
 			}
 		default:
 			return fmt.Errorf("unknown device type: %v", devices.Type())
@@ -240,13 +240,13 @@ func (s *ResourceState) syncPreparedDevicesToCRDSpec(spec *nascrd.NodeAllocation
 	for claim, resources := range s.prepared {
 		var prepared nascrd.PreparedResources
 		switch resources.Type() {
-		case nascrd.CpuResourceType:
-			prepared.CpuResource = &nascrd.PreparedCpus{}
-			for _, device := range resources.Cpu.Resources {
-				outdevice := nascrd.PreparedCpu{
+		case nascrd.CPUResourceType:
+			prepared.CPUResource = &nascrd.PreparedCPUs{}
+			for _, device := range resources.CPU.Resources {
+				outdevice := nascrd.PreparedCPU{
 					UUID: device.uuid,
 				}
-				prepared.CpuResource.Resources = append(prepared.CpuResource.Resources, outdevice)
+				prepared.CPUResource.Resources = append(prepared.CPUResource.Resources, outdevice)
 			}
 		default:
 			return fmt.Errorf("unknown device type: %v", resources.Type())

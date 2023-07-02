@@ -31,7 +31,7 @@ func enumerateAllPossibleDevices() (AllocatableResources, error) {
 	alldevices := make(AllocatableResources)
 	for _, uuid := range uuids {
 		deviceInfo := &AllocatableResourceInfo{
-			CpuInfo: &CpuInfo{
+			CPUInfo: &CPUInfo{
 				uuid:  uuid,
 				model: "LATEST-GPU-MODEL",
 			},

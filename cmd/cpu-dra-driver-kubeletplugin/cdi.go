@@ -98,8 +98,8 @@ func (cdi *CDIHandler) CreateClaimSpecFile(claimUID string, devices *PreparedRes
 
 	gpuIdx := 0
 	switch devices.Type() {
-	case nascrd.CpuResourceType:
-		for _, device := range devices.Cpu.Resources {
+	case nascrd.CPUResourceType:
+		for _, device := range devices.CPU.Resources {
 			cdiDevice := cdispec.Device{
 				Name: device.uuid,
 				ContainerEdits: cdispec.ContainerEdits{
@@ -135,8 +135,8 @@ func (cdi *CDIHandler) GetClaimDevices(claimUID string, devices *PreparedResourc
 	}
 
 	switch devices.Type() {
-	case nascrd.CpuResourceType:
-		for _, device := range devices.Cpu.Resources {
+	case nascrd.CPUResourceType:
+		for _, device := range devices.CPU.Resources {
 			cdiDevice := cdiapi.QualifiedName(cdiVendor, cdiClass, device.uuid)
 			cdiDevices = append(cdiDevices, cdiDevice)
 		}
