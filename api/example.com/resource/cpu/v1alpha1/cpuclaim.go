@@ -20,8 +20,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// CpuClaimParametersSpec is the spec for the CpuClaimParameters CRD.
-type CpuClaimParametersSpec struct {
+// CPUClaimParametersSpec is the spec for the CPUClaimParameters CRD.
+type CPUClaimParametersSpec struct {
 	Count int `json:"count,omitempty"`
 }
 
@@ -30,20 +30,20 @@ type CpuClaimParametersSpec struct {
 // +k8s:openapi-gen=true
 // +kubebuilder:resource:scope=Namespaced
 
-// CpuClaimParameters holds the set of parameters provided when creating a resource claim for a CPU.
-type CpuClaimParameters struct {
+// CPUClaimParameters holds the set of parameters provided when creating a resource claim for a CPU.
+type CPUClaimParameters struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec CpuClaimParametersSpec `json:"spec,omitempty"`
+	Spec CPUClaimParametersSpec `json:"spec,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// CpuClaimParametersList represents the "plural" of a CpuClaimParameters CRD object.
-type CpuClaimParametersList struct {
+// CPUClaimParametersList represents the "plural" of a CPUClaimParameters CRD object.
+type CPUClaimParametersList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
 
-	Items []CpuClaimParameters `json:"items"`
+	Items []CPUClaimParameters `json:"items"`
 }

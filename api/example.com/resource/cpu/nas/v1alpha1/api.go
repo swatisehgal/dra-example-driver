@@ -24,7 +24,7 @@ const (
 	GroupName = "nas.cpu.resource.example.com"
 	Version   = "v1alpha1"
 
-	CpuResourceType        = "cpu"
+	CPUResourceType        = "cpu"
 	UnknownCPUResourceType = "unknown"
 
 	NodeAllocationStateStatusReady    = "Ready"

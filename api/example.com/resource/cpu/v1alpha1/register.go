@@ -41,10 +41,10 @@ func Resource(resource string) schema.GroupResource {
 
 func addKnownTypes(scheme *runtime.Scheme) error {
 	scheme.AddKnownTypes(SchemeGroupVersion,
-		&CpuResourceClassParameters{},
-		&CpuResourceClassParametersList{},
-		&CpuClaimParameters{},
-		&CpuClaimParametersList{},
+		&CPUResourceClassParameters{},
+		&CPUResourceClassParametersList{},
+		&CPUClaimParameters{},
+		&CPUClaimParametersList{},
 	)
 	metav1.AddToGroupVersion(scheme, SchemeGroupVersion)
 	return nil

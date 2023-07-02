@@ -20,67 +20,67 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// AllocatableCpu represents an allocatable CPU on a node.
-type AllocatableCpu struct {
+// AllocatableCPU represents an allocatable CPU on a node.
+type AllocatableCPU struct {
 	UUID        string `json:"uuid"`
 	ProductName string `json:"productName"`
 }
 
 // AllocatableResource represents an allocatable device on a node.
 type AllocatableResource struct {
-	CpuResource *AllocatableCpu `json:"cpuResource,omitempty"`
+	CPUResource *AllocatableCPU `json:"cpuResource,omitempty"`
 }
 
 // Type returns the type of AllocatableResource this represents.
 func (d AllocatableResource) Type() string {
-	if d.CpuResource != nil {
-		return CpuResourceType
+	if d.CPUResource != nil {
+		return CPUResourceType
 	}
 	return UnknownCPUResourceType
 }
 
-// AllocatedCpu represents an allocated GPU.
-type AllocatedCpu struct {
+// AllocatedCPU represents an allocated GPU.
+type AllocatedCPU struct {
 	UUID string `json:"uuid,omitempty"`
 }
 
-// AllocatedCpus represents a set of allocated GPUs.
-type AllocatedCpus struct {
-	Resources []AllocatedCpu `json:"resources"`
+// AllocatedCPUs represents a set of allocated GPUs.
+type AllocatedCPUs struct {
+	Resources []AllocatedCPU `json:"resources"`
 }
 
 // AllocatedDevices represents a set of allocated devices.
 type AllocatedResources struct {
-	CpuResource *AllocatedCpus `json:"cpuResource,omitempty"`
+	CPUResource *AllocatedCPUs `json:"cpuResource,omitempty"`
 }
 
 // Type returns the type of AllocatedDevices this represents.
 func (r AllocatedResources) Type() string {
-	if r.CpuResource != nil {
-		return CpuResourceType
+	if r.CPUResource != nil {
+		return CPUResourceType
 	}
 	return UnknownCPUResourceType
 }
 
-// PreparedCpu represents a prepared GPU on a node.
-type PreparedCpu struct {
+// PreparedCPU represents a prepared GPU on a node.
+type PreparedCPU struct {
 	UUID string `json:"uuid"`
 }
 
-// PreparedCpus represents a set of prepared GPUs on a node.
-type PreparedCpus struct {
-	Resources []PreparedCpu `json:"resources"`
+// PreparedCPUs represents a set of prepared GPUs on a node.
+type PreparedCPUs struct {
+	Resources []PreparedCPU `json:"resources"`
 }
 
 // PreparedDevices represents a set of prepared devices on a node.
 type PreparedResources struct {
-	CpuResource *PreparedCpus `json:"cpuResource,omitempty"`
+	CPUResource *PreparedCPUs `json:"cpuResource,omitempty"`
 }
 
 // Type returns the type of PreparedDevices this represents.
 func (d PreparedResources) Type() string {
-	if d.CpuResource != nil {
-		return CpuResourceType
+	if d.CPUResource != nil {
+		return CPUResourceType
 	}
 	return UnknownCPUResourceType
 }

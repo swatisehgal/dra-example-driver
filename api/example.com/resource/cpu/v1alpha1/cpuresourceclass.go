@@ -20,15 +20,15 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// CpuResourceSelector allows one to match on a specific type of Device as part of the class.
-type CpuResourceSelector struct {
+// CPUResourceSelector allows one to match on a specific type of Device as part of the class.
+type CPUResourceSelector struct {
 	Type string `json:"type"`
 	Name string `json:"name"`
 }
 
-// CpuResourceClassParametersSpec is the spec for the DeviceClassParametersSpec CRD.
-type CpuResourceClassParametersSpec struct {
-	CpuResourceSelector []CpuResourceSelector `json:"cpuResourceSelector,omitempty"`
+// CPUResourceClassParametersSpec is the spec for the DeviceClassParametersSpec CRD.
+type CPUResourceClassParametersSpec struct {
+	CPUResourceSelector []CPUResourceSelector `json:"cpuResourceSelector,omitempty"`
 }
 
 // +genclient
@@ -37,20 +37,20 @@ type CpuResourceClassParametersSpec struct {
 // +k8s:openapi-gen=true
 // +kubebuilder:resource:scope=Cluster
 
-// CpuResourceClassParameters holds the set of parameters provided when creating a resource class for this driver.
-type CpuResourceClassParameters struct {
+// CPUResourceClassParameters holds the set of parameters provided when creating a resource class for this driver.
+type CPUResourceClassParameters struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec CpuResourceClassParametersSpec `json:"spec,omitempty"`
+	Spec CPUResourceClassParametersSpec `json:"spec,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// CpuResourceClassParametersList represents the "plural" of a ResourceClassParameters CRD object.
-type CpuResourceClassParametersList struct {
+// CPUResourceClassParametersList represents the "plural" of a ResourceClassParameters CRD object.
+type CPUResourceClassParametersList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
 
-	Items []CpuResourceClassParameters `json:"items"`
+	Items []CPUResourceClassParameters `json:"items"`
 }

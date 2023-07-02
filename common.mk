@@ -27,8 +27,8 @@ CPUAPIS := cpu/nas/v1alpha1 cpu/v1alpha1
 
 PLURAL_EXCEPTIONS  = DeviceClassParameters:DeviceClassParameters
 PLURAL_EXCEPTIONS += GpuClaimParameters:GpuClaimParameters
-PLURAL_EXCEPTIONS += CpuResourceClassParameters:CpuResourceClassParameters
-PLURAL_EXCEPTIONS += CpuClaimParameters:CpuClaimParameters
+PLURAL_EXCEPTIONS += CPUResourceClassParameters:CPUResourceClassParameters
+PLURAL_EXCEPTIONS += CPUClaimParameters:CPUClaimParameters
 
 ifeq ($(IMAGE_NAME),)
 REGISTRY ?= registry.example.com

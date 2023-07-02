@@ -24,22 +24,22 @@ const (
 	GroupName = "cpu.resource.example.com"
 	Version   = "v1alpha1"
 
-	CpuClaimParametersKind = "CpuClaimParameters"
+	CPUClaimParametersKind = "CPUClaimParameters"
 )
 
-func DefaultDeviceClassParametersSpec() *CpuResourceClassParametersSpec {
-	return &CpuResourceClassParametersSpec{
-		CpuResourceSelector: []CpuResourceSelector{
+func DefaultDeviceClassParametersSpec() *CPUResourceClassParametersSpec {
+	return &CPUResourceClassParametersSpec{
+		CPUResourceSelector: []CPUResourceSelector{
 			{
-				Type: nascrd.CpuResourceType,
+				Type: nascrd.CPUResourceType,
 				Name: "*",
 			},
 		},
 	}
 }
 
-func DefaultCpuClaimParametersSpec() *CpuClaimParametersSpec {
-	return &CpuClaimParametersSpec{
+func DefaultCPUClaimParametersSpec() *CPUClaimParametersSpec {
+	return &CPUClaimParametersSpec{
 		Count: 1,
 	}
 }
