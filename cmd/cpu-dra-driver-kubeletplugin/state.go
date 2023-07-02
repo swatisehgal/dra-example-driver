@@ -104,7 +104,7 @@ func (s *ResourceState) Prepare(claimUID string, allocation nascrd.AllocatedReso
 	var err error
 	switch allocation.Type() {
 	case nascrd.CpuResourceType:
-		prepared.Cpu, err = s.prepareGpus(claimUID, allocation.CpuResource)
+		prepared.Cpu, err = s.prepareCpus(claimUID, allocation.CpuResource)
 	default:
 		err = fmt.Errorf("unknown device type: %v", allocation.Type())
 	}
@@ -136,7 +136,7 @@ func (s *ResourceState) Unprepare(claimUID string) error {
 
 	switch s.prepared[claimUID].Type() {
 	case nascrd.CpuResourceType:
-		err := s.unprepareGpus(claimUID, s.prepared[claimUID])
+		err := s.unprepareCpus(claimUID, s.prepared[claimUID])
 		if err != nil {
 			return fmt.Errorf("unprepare failed: %v", err)
 		}
@@ -172,30 +172,30 @@ func (s *ResourceState) GetUpdatedSpec(inspec *nascrd.NodeAllocationStateSpec) (
 	return outspec, nil
 }
 
-func (s *ResourceState) prepareGpus(claimUID string, allocated *nascrd.AllocatedCpus) (*PreparedCpus, error) {
+func (s *ResourceState) prepareCpus(claimUID string, allocated *nascrd.AllocatedCpus) (*PreparedCpus, error) {
 	prepared := &PreparedCpus{}
 
 	for _, device := range allocated.Resources {
-		gpuInfo := s.allocatable[device.UUID].CpuInfo
+		cpuInfo := s.allocatable[device.UUID].CpuInfo
 
 		if _, exists := s.allocatable[device.UUID]; !exists {
-			return nil, fmt.Errorf("requested GPU does not exist: %v", device.UUID)
+			return nil, fmt.Errorf("requested cpu does not exist: %v", device.UUID)
 		}
 
-		prepared.Resources = append(prepared.Resources, gpuInfo)
+		prepared.Resources = append(prepared.Resources, cpuInfo)
 	}
 
 	return prepared, nil
 }
 
-func (s *ResourceState) unprepareGpus(claimUID string, devices *PreparedResources) error {
+func (s *ResourceState) unprepareCpus(claimUID string, devices *PreparedResources) error {
 	return nil
 }
 
 func (s *ResourceState) syncAllocatableDevicesToCRDSpec(spec *nascrd.NodeAllocationStateSpec) error {
-	gpus := make(map[string]nascrd.AllocatableResource)
+	cpus := make(map[string]nascrd.AllocatableResource)
 	for _, device := range s.allocatable {
-		gpus[device.uuid] = nascrd.AllocatableResource{
+		cpus[device.uuid] = nascrd.AllocatableResource{
 			CpuResource: &nascrd.AllocatableCpu{
 				UUID:        device.uuid,
 				ProductName: device.model,
@@ -204,7 +204,7 @@ func (s *ResourceState) syncAllocatableDevicesToCRDSpec(spec *nascrd.NodeAllocat
 	}
 
 	var allocatable []nascrd.AllocatableResource
-	for _, device := range gpus {
+	for _, device := range cpus {
 		allocatable = append(allocatable, device)
 	}
 
@@ -214,7 +214,7 @@ func (s *ResourceState) syncAllocatableDevicesToCRDSpec(spec *nascrd.NodeAllocat
 }
 
 func (s *ResourceState) syncPreparedDevicesFromCRDSpec(spec *nascrd.NodeAllocationStateSpec) error {
-	gpus := s.allocatable
+	cpus := s.allocatable
 
 	prepared := make(PreparedClaims)
 	for claim, devices := range spec.PreparedClaims {
@@ -222,7 +222,7 @@ func (s *ResourceState) syncPreparedDevicesFromCRDSpec(spec *nascrd.NodeAllocati
 		case nascrd.CpuResourceType:
 			prepared[claim] = &PreparedResources{}
 			for _, d := range devices.CpuResource.Resources {
-				prepared[claim].Cpu.Resources = append(prepared[claim].Cpu.Resources, gpus[d.UUID].CpuInfo)
+				prepared[claim].Cpu.Resources = append(prepared[claim].Cpu.Resources, cpus[d.UUID].CpuInfo)
 			}
 		default:
 			return fmt.Errorf("unknown device type: %v", devices.Type())
