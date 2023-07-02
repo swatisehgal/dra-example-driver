@@ -52,7 +52,7 @@ func NewDriver(config *Config) *driver {
 		lock:      NewPerNodeMutex(),
 		namespace: config.namespace,
 		clientset: config.clientset.example,
-		cpu:       NewCpuDriver(),
+		cpu:       NewCPUDriver(),
 	}
 }
 
@@ -63,7 +63,7 @@ func (d driver) GetClassParameters(ctx context.Context, class *resourcev1.Resour
 	if class.ParametersRef.APIGroup != DriverAPIGroup {
 		return nil, fmt.Errorf("incorrect API group: %v", class.ParametersRef.APIGroup)
 	}
-	dc, err := d.clientset.CpuV1alpha1().CpuResourceClassParameters().Get(ctx, class.ParametersRef.Name, metav1.GetOptions{})
+	dc, err := d.clientset.CpuV1alpha1().CPUResourceClassParameters().Get(ctx, class.ParametersRef.Name, metav1.GetOptions{})
 	if err != nil {
 		return nil, fmt.Errorf("error getting DeviceClassParameters called '%v': %v", class.ParametersRef.Name, err)
 	}
@@ -72,20 +72,20 @@ func (d driver) GetClassParameters(ctx context.Context, class *resourcev1.Resour
 
 func (d driver) GetClaimParameters(ctx context.Context, claim *resourcev1.ResourceClaim, class *resourcev1.ResourceClass, classParameters interface{}) (interface{}, error) {
 	if claim.Spec.ParametersRef == nil {
-		return cpucrd.DefaultCpuClaimParametersSpec(), nil
+		return cpucrd.DefaultCPUClaimParametersSpec(), nil
 	}
 	if claim.Spec.ParametersRef.APIGroup != DriverAPIGroup {
 		return nil, fmt.Errorf("incorrect API group: %v", claim.Spec.ParametersRef.APIGroup)
 	}
 	switch claim.Spec.ParametersRef.Kind {
-	case cpucrd.CpuClaimParametersKind:
-		gc, err := d.clientset.CpuV1alpha1().CpuClaimParameters(claim.Namespace).Get(ctx, claim.Spec.ParametersRef.Name, metav1.GetOptions{})
+	case cpucrd.CPUClaimParametersKind:
+		gc, err := d.clientset.CpuV1alpha1().CPUClaimParameters(claim.Namespace).Get(ctx, claim.Spec.ParametersRef.Name, metav1.GetOptions{})
 		if err != nil {
-			return nil, fmt.Errorf("error getting CpuClaimParameters called '%v' in namespace '%v': %v", claim.Spec.ParametersRef.Name, claim.Namespace, err)
+			return nil, fmt.Errorf("error getting CPUClaimParameters called '%v' in namespace '%v': %v", claim.Spec.ParametersRef.Name, claim.Namespace, err)
 		}
 		err = d.cpu.ValidateClaimParameters(&gc.Spec)
 		if err != nil {
-			return nil, fmt.Errorf("error validating CpuClaimParameters called '%v' in namespace '%v': %v", claim.Spec.ParametersRef.Name, claim.Namespace, err)
+			return nil, fmt.Errorf("error validating CPUClaimParameters called '%v' in namespace '%v': %v", claim.Spec.ParametersRef.Name, claim.Namespace, err)
 		}
 		return &gc.Spec, nil
 	default:
@@ -126,10 +126,10 @@ func (d driver) Allocate(ctx context.Context, claim *resourcev1.ResourceClaim, c
 	}
 
 	var onSuccess OnSuccessCallback
-	classParams, _ := classParameters.(*cpucrd.CpuResourceClassParametersSpec)
+	classParams, _ := classParameters.(*cpucrd.CPUResourceClassParametersSpec)
 
 	switch claimParams := claimParameters.(type) {
-	case *cpucrd.CpuClaimParametersSpec:
+	case *cpucrd.CPUClaimParametersSpec:
 		onSuccess, err = d.cpu.Allocate(crd, claim, claimParams, class, classParams, selectedNode)
 	default:
 		err = fmt.Errorf("unknown ResourceClaim.ParametersRef.Kind: %v", claim.Spec.ParametersRef.Kind)
@@ -179,7 +179,7 @@ func (d driver) Deallocate(ctx context.Context, claim *resourcev1.ResourceClaim)
 
 	devices := crd.Spec.AllocatedClaims[string(claim.UID)]
 	switch devices.Type() {
-	case nascrd.CpuResourceType:
+	case nascrd.CPUResourceType:
 		err = d.cpu.Deallocate(crd, claim)
 	default:
 		err = fmt.Errorf("unknown AllocatedDevices.Type(): %v", devices.Type())
@@ -246,16 +246,16 @@ func (d driver) unsuitableNode(ctx context.Context, pod *corev1.Pod, allcas []*c
 	perKindCas := make(map[string][]*controller.ClaimAllocation)
 	for _, ca := range allcas {
 		switch ca.ClaimParameters.(type) {
-		case *cpucrd.CpuClaimParametersSpec:
-			perKindCas[cpucrd.CpuClaimParametersKind] = append(perKindCas[cpucrd.CpuClaimParametersKind], ca)
+		case *cpucrd.CPUClaimParametersSpec:
+			perKindCas[cpucrd.CPUClaimParametersKind] = append(perKindCas[cpucrd.CPUClaimParametersKind], ca)
 		default:
 			return fmt.Errorf("unknown ResourceClaimParameters kind: %T", ca.ClaimParameters)
 		}
 	}
-	for _, kind := range []string{cpucrd.CpuClaimParametersKind} {
+	for _, kind := range []string{cpucrd.CPUClaimParametersKind} {
 		var err error
 		switch kind {
-		case cpucrd.CpuClaimParametersKind:
+		case cpucrd.CPUClaimParametersKind:
 			err = d.cpu.UnsuitableNode(crd, pod, perKindCas[kind], allcas, potentialNode)
 		default:
 			err = fmt.Errorf("unknown ResourceClaimParameters kind: %+v", kind)

@@ -31,20 +31,20 @@ type cpudriver struct {
 	PendingAllocatedClaims *PerNodeAllocatedClaims
 }
 
-func NewCpuDriver() *cpudriver {
+func NewCPUDriver() *cpudriver {
 	return &cpudriver{
 		PendingAllocatedClaims: NewPerNodeAllocatedClaims(),
 	}
 }
 
-func (g *cpudriver) ValidateClaimParameters(claimParams *cpucrd.CpuClaimParametersSpec) error {
+func (g *cpudriver) ValidateClaimParameters(claimParams *cpucrd.CPUClaimParametersSpec) error {
 	if claimParams.Count < 1 {
 		return fmt.Errorf("invalid number of GPUs requested: %v", claimParams.Count)
 	}
 	return nil
 }
 
-func (g *cpudriver) Allocate(crd *nascrd.NodeAllocationState, claim *resourcev1.ResourceClaim, claimParams *cpucrd.CpuClaimParametersSpec, class *resourcev1.ResourceClass, classParams *cpucrd.CpuResourceClassParametersSpec, selectedNode string) (OnSuccessCallback, error) {
+func (g *cpudriver) Allocate(crd *nascrd.NodeAllocationState, claim *resourcev1.ResourceClaim, claimParams *cpucrd.CPUClaimParametersSpec, class *resourcev1.ResourceClass, classParams *cpucrd.CPUResourceClassParametersSpec, selectedNode string) (OnSuccessCallback, error) {
 	claimUID := string(claim.UID)
 
 	if !g.PendingAllocatedClaims.Exists(claimUID, selectedNode) {
@@ -76,7 +76,7 @@ func (g *cpudriver) UnsuitableNode(crd *nascrd.NodeAllocationState, pod *corev1.
 	allocated := g.allocate(crd, pod, gpucas, allcas, potentialNode)
 	for _, ca := range gpucas {
 		claimUID := string(ca.Claim.UID)
-		claimParams, _ := ca.ClaimParameters.(*cpucrd.CpuClaimParametersSpec)
+		claimParams, _ := ca.ClaimParameters.(*cpucrd.CPUClaimParametersSpec)
 
 		if claimParams.Count != len(allocated[claimUID]) {
 			for _, ca := range allcas {
@@ -85,16 +85,16 @@ func (g *cpudriver) UnsuitableNode(crd *nascrd.NodeAllocationState, pod *corev1.
 			return nil
 		}
 
-		var resources []nascrd.AllocatedCpu
+		var resources []nascrd.AllocatedCPU
 		for _, cpu := range allocated[claimUID] {
-			resource := nascrd.AllocatedCpu{
+			resource := nascrd.AllocatedCPU{
 				UUID: cpu,
 			}
 			resources = append(resources, resource)
 		}
 
 		allocatedDevices := nascrd.AllocatedResources{
-			CpuResource: &nascrd.AllocatedCpus{
+			CPUResource: &nascrd.AllocatedCPUs{
 				Resources: resources,
 			},
 		}
@@ -106,12 +106,12 @@ func (g *cpudriver) UnsuitableNode(crd *nascrd.NodeAllocationState, pod *corev1.
 }
 
 func (g *cpudriver) allocate(crd *nascrd.NodeAllocationState, pod *corev1.Pod, gpucas []*controller.ClaimAllocation, allcas []*controller.ClaimAllocation, node string) map[string][]string {
-	available := make(map[string]*nascrd.AllocatableCpu)
+	available := make(map[string]*nascrd.AllocatableCPU)
 
 	for _, resource := range crd.Spec.AllocatableResources {
 		switch resource.Type() {
-		case nascrd.CpuResourceType:
-			available[resource.CpuResource.UUID] = resource.CpuResource
+		case nascrd.CPUResourceType:
+			available[resource.CPUResource.UUID] = resource.CPUResource
 		default:
 			// skip other resources
 		}
@@ -119,8 +119,8 @@ func (g *cpudriver) allocate(crd *nascrd.NodeAllocationState, pod *corev1.Pod, g
 
 	for _, allocation := range crd.Spec.AllocatedClaims {
 		switch allocation.Type() {
-		case nascrd.CpuResourceType:
-			for _, resource := range allocation.CpuResource.Resources {
+		case nascrd.CPUResourceType:
+			for _, resource := range allocation.CPUResource.Resources {
 				delete(available, resource.UUID)
 			}
 		default:
@@ -132,14 +132,14 @@ func (g *cpudriver) allocate(crd *nascrd.NodeAllocationState, pod *corev1.Pod, g
 	for _, ca := range gpucas {
 		claimUID := string(ca.Claim.UID)
 		if _, exists := crd.Spec.AllocatedClaims[claimUID]; exists {
-			devices := crd.Spec.AllocatedClaims[claimUID].CpuResource.Resources
+			devices := crd.Spec.AllocatedClaims[claimUID].CPUResource.Resources
 			for _, device := range devices {
 				allocated[claimUID] = append(allocated[claimUID], device.UUID)
 			}
 			continue
 		}
 
-		claimParams, _ := ca.ClaimParameters.(*cpucrd.CpuClaimParametersSpec)
+		claimParams, _ := ca.ClaimParameters.(*cpucrd.CPUClaimParametersSpec)
 		var devices []string
 		for i := 0; i < claimParams.Count; i++ {
 			for _, device := range available {
