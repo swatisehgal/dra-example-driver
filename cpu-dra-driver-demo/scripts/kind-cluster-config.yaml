@@ -1,5 +1,9 @@
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
+kubeadmConfigPatches:
+- |
+  kind: KubeletConfiguration
+  reservedSystemCPUs: "0-1"
 featureGates:
   DynamicResourceAllocation: true
 containerdConfigPatches:

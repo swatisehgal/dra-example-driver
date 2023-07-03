@@ -55,6 +55,7 @@ type Flags struct {
 	kubeconfig   *string
 	kubeAPIQPS   *float32
 	kubeAPIBurst *int
+	reservedCPUs *string // these are CPUs that are reserved. The DRA driver and the kubelet config is propulated
 
 	cdiRoot *string
 }
@@ -154,7 +155,7 @@ func AddFlags(cmd *cobra.Command) *Flags {
 	flags.kubeconfig = fs.String("kubeconfig", "", "Absolute path to the kube.config file. Either this or KUBECONFIG need to be set if the driver is being run out of cluster.")
 	flags.kubeAPIQPS = fs.Float32("kube-api-qps", 5, "QPS to use while communicating with the kubernetes apiserver.")
 	flags.kubeAPIBurst = fs.Int("kube-api-burst", 10, "Burst to use while communicating with the kubernetes apiserver.")
-
+	flags.reservedCPUs = fs.String("reserved-cpus", "", "CPUs reserved for OS and kube processes.")
 	fs = sharedFlagSets.FlagSet("CDI")
 	flags.cdiRoot = fs.String("cdi-root", "/etc/cdi", "Absolute path to the directory where CDI files will be generated.")
 
