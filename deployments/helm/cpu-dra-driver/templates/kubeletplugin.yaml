@@ -57,7 +57,7 @@ spec:
           {{- toYaml .Values.kubeletPlugin.containers.plugin.securityContext | nindent 10 }}
         image: {{ include "cpu-dra-driver.fullimage" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ["cpu-dra-driver-kubeletplugin"]
+        command: ["cpu-dra-driver-kubeletplugin", "--reserved-cpus", "0-1"]
         resources:
           {{- toYaml .Values.kubeletPlugin.containers.plugin.resources | nindent 10 }}
         env:
