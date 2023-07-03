@@ -9,7 +9,7 @@ metadata:
 
 ---
 apiVersion: cpu.resource.example.com/v1alpha1
-kind: CpuClaimParameters
+kind: CPUClaimParameters
 metadata:
   namespace: cpu-test4
   name: multiple-cpus
@@ -27,7 +27,7 @@ spec:
     resourceClassName: cpu.example.com
     parametersRef:
       apiGroup: cpu.resource.example.com
-      kind: CpuClaimParameters
+      kind: CPUClaimParameters
       name: multiple-cpus
 
 ---
