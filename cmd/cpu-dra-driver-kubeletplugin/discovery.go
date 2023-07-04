@@ -33,7 +33,7 @@ func enumerateAllPossibleCPUs() (AllocatableResources, error) {
 		deviceInfo := &AllocatableResourceInfo{
 			CPUInfo: &CPUInfo{
 				uuid:  uuid,
-				model: "LATEST-GPU-MODEL",
+				model: "LATEST-CPU-MODEL",
 			},
 		}
 		alldevices[uuid] = deviceInfo

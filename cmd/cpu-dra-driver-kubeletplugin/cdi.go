@@ -30,7 +30,7 @@ const (
 	cdiClass  = "cpu"
 	cdiKind   = cdiVendor + "/" + cdiClass
 
-	cdiCommonDeviceName = "common"
+	cdiCommonCpuName = "common-cpus"
 )
 
 type CDIHandler struct {
@@ -61,10 +61,10 @@ func (cdi *CDIHandler) GetDevice(device string) *cdiapi.Device {
 func (cdi *CDIHandler) CreateCommonSpecFile() error {
 	spec := &cdispec.Spec{
 		Kind: cdiKind,
-		Devices: []cdispec.Cpus{
+		Cpus: []cdispec.Cpu{
 			{
-				Name: cdiCommonDeviceName,
-				ContainerEdits: cdispec.ContainerEdits{
+				Name: cdiCommonCpuName,
+				ContainerEdits: cdispec.CPUContainerEdits{
 					Env: []string{
 						fmt.Sprintf("CPU_NODE_NAME=%s", os.Getenv("NODE_NAME")),
 						fmt.Sprintf("DRA_RESOURCE_DRIVER_NAME=%s", DriverName),
@@ -80,7 +80,7 @@ func (cdi *CDIHandler) CreateCommonSpecFile() error {
 	}
 	spec.Version = minVersion
 
-	specName, err := cdiapi.GenerateNameForTransientSpec(spec, cdiCommonDeviceName)
+	specName, err := cdiapi.GenerateNameForTransientSpec(spec, cdiCommonCpuName)
 	if err != nil {
 		return fmt.Errorf("failed to generate Spec name: %w", err)
 	}
@@ -131,7 +131,7 @@ func (cdi *CDIHandler) DeleteClaimSpecFile(claimUID string) error {
 
 func (cdi *CDIHandler) GetClaimDevices(claimUID string, devices *PreparedResources) ([]string, error) {
 	cdiDevices := []string{
-		cdiapi.QualifiedName(cdiVendor, cdiClass, cdiCommonDeviceName),
+		cdiapi.QualifiedName(cdiVendor, cdiClass, cdiCommonCpuName),
 	}
 
 	switch devices.Type() {
