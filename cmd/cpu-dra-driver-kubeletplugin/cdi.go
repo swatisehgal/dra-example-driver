@@ -61,12 +61,12 @@ func (cdi *CDIHandler) GetDevice(device string) *cdiapi.Device {
 func (cdi *CDIHandler) CreateCommonSpecFile() error {
 	spec := &cdispec.Spec{
 		Kind: cdiKind,
-		Devices: []cdispec.Device{
+		Devices: []cdispec.Cpus{
 			{
 				Name: cdiCommonDeviceName,
 				ContainerEdits: cdispec.ContainerEdits{
 					Env: []string{
-						fmt.Sprintf("GPU_NODE_NAME=%s", os.Getenv("NODE_NAME")),
+						fmt.Sprintf("CPU_NODE_NAME=%s", os.Getenv("NODE_NAME")),
 						fmt.Sprintf("DRA_RESOURCE_DRIVER_NAME=%s", DriverName),
 					},
 				},

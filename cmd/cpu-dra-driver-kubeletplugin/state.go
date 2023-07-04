@@ -58,7 +58,7 @@ type ResourceState struct {
 }
 
 func NewResourceState(config *Config) (*ResourceState, error) {
-	allocatable, err := enumerateAllPossibleDevices()
+	allocatable, err := enumerateAllPossibleCPUs()
 	if err != nil {
 		return nil, fmt.Errorf("error enumerating all possible devices: %v", err)
 	}
@@ -79,10 +79,10 @@ func NewResourceState(config *Config) (*ResourceState, error) {
 		prepared:    make(PreparedClaims),
 	}
 
-	err = state.syncPreparedDevicesFromCRDSpec(&config.nascrd.Spec)
-	if err != nil {
-		return nil, fmt.Errorf("unable to sync prepared devices from CRD: %v", err)
-	}
+	// err = state.syncPreparedDevicesFromCRDSpec(&config.nascrd.Spec)
+	// if err != nil {
+	// 	return nil, fmt.Errorf("unable to sync prepared devices from CRD: %v", err)
+	// }
 
 	return state, nil
 }
