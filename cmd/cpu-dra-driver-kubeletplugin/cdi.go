@@ -66,7 +66,7 @@ func (cdi *CDIHandler) CreateCommonSpecFile() error {
 				Name: cdiCommonDeviceName,
 				ContainerEdits: cdispec.ContainerEdits{
 					Env: []string{
-						fmt.Sprintf("GPU_NODE_NAME=%s", os.Getenv("NODE_NAME")),
+						fmt.Sprintf("CPU_NODE_NAME=%s", os.Getenv("NODE_NAME")),
 						fmt.Sprintf("DRA_RESOURCE_DRIVER_NAME=%s", DriverName),
 					},
 				},
@@ -96,7 +96,7 @@ func (cdi *CDIHandler) CreateClaimSpecFile(claimUID string, devices *PreparedRes
 		Devices: []cdispec.Device{},
 	}
 
-	gpuIdx := 0
+	cpuIdx := 0
 	switch devices.Type() {
 	case nascrd.CPUResourceType:
 		for _, device := range devices.CPU.Resources {
@@ -104,12 +104,12 @@ func (cdi *CDIHandler) CreateClaimSpecFile(claimUID string, devices *PreparedRes
 				Name: device.uuid,
 				ContainerEdits: cdispec.ContainerEdits{
 					Env: []string{
-						fmt.Sprintf("GPU_DEVICE_%d=%s", gpuIdx, device.uuid),
+						fmt.Sprintf("CPU_%d=%s", cpuIdx, device.uuid),
 					},
 				},
 			}
 			spec.Devices = append(spec.Devices, cdiDevice)
-			gpuIdx++
+			cpuIdx++
 		}
 	default:
 		return fmt.Errorf("unknown device type: %v", devices.Type())

@@ -17,28 +17,59 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 	"os"
 
 	"github.com/google/uuid"
+	"github.com/jaypipes/ghw"
 )
 
-func enumerateAllPossibleDevices() (AllocatableResources, error) {
-	numGPUs := 8
+func enumerateAllCPUs(topologyInfo *ghw.TopologyInfo, cpuInfo *ghw.CPUInfo) (AllocatableResources, error) {
+	numCPUs := getTotalCPUs(topologyInfo)
 	seed := os.Getenv("NODE_NAME")
-	uuids := generateUUIDs(seed, numGPUs)
-
-	alldevices := make(AllocatableResources)
-	for _, uuid := range uuids {
-		deviceInfo := &AllocatableResourceInfo{
-			CPUInfo: &CPUInfo{
-				uuid:  uuid,
-				model: "LATEST-GPU-MODEL",
-			},
+	uuids := generateUUIDs(seed, numCPUs)
+	allCPUs := make(AllocatableResources)
+	cpuNum := 0
+	for _, node := range topologyInfo.Nodes {
+		for _, core := range node.Cores {
+			for _, cpu := range core.LogicalProcessors {
+				cpuUUID := fmt.Sprintf("%s-%d-%d-%d", uuids[cpuNum], node.ID, core.ID, cpu)
+				cpuInfo := &AllocatableResourceInfo{
+					CPUInfo: &CPUInfo{
+						uuid:   cpuUUID,
+						cpuID:  cpu,
+						model:  cpuInfo.Processors[0].Model,
+						numaID: node.ID,
+						coreID: core.ID,
+					},
+				}
+				allCPUs[cpuUUID] = cpuInfo
+				cpuNum++
+			}
 		}
-		alldevices[uuid] = deviceInfo
 	}
-	return alldevices, nil
+	return allCPUs, nil
+}
+
+func getTotalCPUs(topo *ghw.TopologyInfo) int {
+	logicalCores := 0
+	for _, node := range topo.Nodes {
+		nodeSrc := findNodeByID(topo.Nodes, node.ID)
+		for _, core := range nodeSrc.Cores {
+			logicalCores += len(core.LogicalProcessors)
+		}
+	}
+	return int(logicalCores)
+}
+
+func findNodeByID(nodes []*ghw.TopologyNode, nodeID int) *ghw.TopologyNode {
+	for _, node := range nodes {
+		if node.ID == nodeID {
+			return node
+		}
+	}
+	return nil
 }
 
 func generateUUIDs(seed string, count int) []string {
@@ -49,7 +80,7 @@ func generateUUIDs(seed string, count int) []string {
 		charset := make([]byte, 16)
 		rand.Read(charset)
 		uuid, _ := uuid.FromBytes(charset)
-		uuids[i] = "GPU-" + uuid.String()
+		uuids[i] = "CPU-" + uuid.String()
 	}
 
 	return uuids

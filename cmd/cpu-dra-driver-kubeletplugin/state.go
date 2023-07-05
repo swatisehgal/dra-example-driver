@@ -21,14 +21,19 @@ import (
 	"sync"
 
 	nascrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/nas/v1alpha1"
+
+	"github.com/jaypipes/ghw"
 )
 
 type AllocatableResources map[string]*AllocatableResourceInfo
 type PreparedClaims map[string]*PreparedResources
 
 type CPUInfo struct {
-	uuid  string
-	model string
+	uuid   string // This is going to be CPUId
+	cpuID  int
+	model  string
+	numaID int
+	coreID int
 }
 
 type PreparedCPUs struct {
@@ -58,7 +63,19 @@ type ResourceState struct {
 }
 
 func NewResourceState(config *Config) (*ResourceState, error) {
-	allocatable, err := enumerateAllPossibleDevices()
+	topology, err := ghw.Topology(ghw.WithPathOverrides(ghw.PathOverrides{
+		"/sys": *config.flags.sysFsRoot,
+	}))
+	if err != nil {
+		return nil, err
+	}
+
+	cpuInfo, err := ghw.CPU()
+	if err != nil {
+		return nil, err
+	}
+
+	allocatable, err := enumerateAllCPUs(topology, cpuInfo)
 	if err != nil {
 		return nil, fmt.Errorf("error enumerating all possible devices: %v", err)
 	}
