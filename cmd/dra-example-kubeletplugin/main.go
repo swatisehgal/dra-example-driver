@@ -66,6 +66,7 @@ type Config struct {
 }
 
 func main() {
+	klog.Infof("main.go: main")
 	command := NewCommand()
 	err := command.Execute()
 	if err != nil {
@@ -75,6 +76,7 @@ func main() {
 
 // NewCommand creates a *cobra.Command object with default parameters.
 func NewCommand() *cobra.Command {
+	klog.Infof("main.go: NewCommand")
 	cmd := &cobra.Command{
 		Use:  "dra-example-kubeletplugin",
 		Long: "dra-example-kubeletplugin implements a DRA driver plugin.",
@@ -147,6 +149,7 @@ func NewCommand() *cobra.Command {
 }
 
 func AddFlags(cmd *cobra.Command) *Flags {
+	klog.Infof("main.go: AddFlags called")
 	flags := &Flags{}
 	sharedFlagSets := cliflag.NamedFlagSets{}
 
@@ -170,6 +173,7 @@ func AddFlags(cmd *cobra.Command) *Flags {
 }
 
 func GetClientsetConfig(f *Flags) (*rest.Config, error) {
+	klog.Infof("main.go: GetClientsetConfig called")
 	var csconfig *rest.Config
 
 	kubeconfigEnv := os.Getenv("KUBECONFIG")
@@ -198,6 +202,7 @@ func GetClientsetConfig(f *Flags) (*rest.Config, error) {
 }
 
 func StartPlugin(config *Config) error {
+	klog.Infof("main.go: StartPlugin called")
 	err := os.MkdirAll(DriverPluginPath, 0750)
 	if err != nil {
 		return err

@@ -21,6 +21,7 @@ import (
 
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/klog/v2"
 
 	nascrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/gpu/nas/v1alpha1"
 	nasclient "github.com/kubernetes-sigs/dra-example-driver/pkg/example.com/resource/clientset/versioned/typed/nas/v1alpha1"
@@ -32,6 +33,7 @@ type Client struct {
 }
 
 func New(nas *nascrd.NodeAllocationState, client nasclient.NasV1alpha1Interface) *Client {
+	klog.Infof(" NAS Client New called")
 	return &Client{
 		nas,
 		client,
@@ -60,6 +62,7 @@ func (c *Client) Create() error {
 }
 
 func (c *Client) Delete() error {
+	klog.Infof("NAS Client: delete called")
 	deletePolicy := metav1.DeletePropagationForeground
 	deleteOptions := metav1.DeleteOptions{PropagationPolicy: &deletePolicy}
 	err := c.client.NodeAllocationStates(c.nas.Namespace).Delete(context.TODO(), c.nas.Name, deleteOptions)
@@ -70,6 +73,7 @@ func (c *Client) Delete() error {
 }
 
 func (c *Client) Update(spec *nascrd.NodeAllocationStateSpec) error {
+	klog.Infof("NAS Client: Update called")
 	crd := c.nas.DeepCopy()
 	crd.Spec = *spec
 	crd, err := c.client.NodeAllocationStates(c.nas.Namespace).Update(context.TODO(), crd, metav1.UpdateOptions{})
@@ -81,6 +85,7 @@ func (c *Client) Update(spec *nascrd.NodeAllocationStateSpec) error {
 }
 
 func (c *Client) UpdateStatus(status string) error {
+	klog.Infof("NAS CLient: UpdateStatus called :%+v", status)
 	crd := c.nas.DeepCopy()
 	crd.Status = status
 	crd, err := c.client.NodeAllocationStates(c.nas.Namespace).Update(context.TODO(), crd, metav1.UpdateOptions{})

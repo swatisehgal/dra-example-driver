@@ -58,14 +58,19 @@ func enumerateAllCPUs(topologyInfo *ghw.TopologyInfo, cpuInfo *ghw.CPUInfo, rese
 					},
 				}
 				allCPUs[cpuUUID] = cpuInfo
+				klog.Infof("Discovery: allCPUs[%s]= %+v cpuInfo: %+v", cpuUUID, allCPUs[uuids[cpuNum]], cpuInfo)
 				cpuNum++
 			}
 		}
 	}
+	klog.Infof("enumerateAllCPUs: allCPUs %+v", allCPUs)
+
 	return allCPUs, nil
 }
 
 func getTotalCPUs(topo *ghw.TopologyInfo) int {
+	klog.Infof("getTotalCPUs called")
+
 	logicalCores := 0
 	for _, node := range topo.Nodes {
 		nodeSrc := findNodeByID(topo.Nodes, node.ID)
@@ -77,6 +82,7 @@ func getTotalCPUs(topo *ghw.TopologyInfo) int {
 }
 
 func findNodeByID(nodes []*ghw.TopologyNode, nodeID int) *ghw.TopologyNode {
+	klog.Infof("findNodeByID called")
 	for _, node := range nodes {
 		if node.ID == nodeID {
 			return node
@@ -86,6 +92,7 @@ func findNodeByID(nodes []*ghw.TopologyNode, nodeID int) *ghw.TopologyNode {
 }
 
 func generateUUIDs(seed string, count int) []string {
+	klog.Infof("generateUUIDs called")
 	rand := rand.New(rand.NewSource(hash(seed)))
 
 	uuids := make([]string, count)
@@ -100,6 +107,7 @@ func generateUUIDs(seed string, count int) []string {
 }
 
 func hash(s string) int64 {
+	klog.Infof("hash called")
 	h := int64(0)
 	for _, c := range s {
 		h = 31*h + int64(c)

@@ -21,6 +21,7 @@ import (
 	"sync"
 
 	nascrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/gpu/nas/v1alpha1"
+	"k8s.io/klog/v2"
 )
 
 type AllocatableDevices map[string]*AllocatableDeviceInfo
@@ -58,6 +59,7 @@ type DeviceState struct {
 }
 
 func NewDeviceState(config *Config) (*DeviceState, error) {
+	klog.Infof("NewDeviceState called")
 	allocatable, err := enumerateAllPossibleDevices()
 	if err != nil {
 		return nil, fmt.Errorf("error enumerating all possible devices: %v", err)
@@ -88,6 +90,7 @@ func NewDeviceState(config *Config) (*DeviceState, error) {
 }
 
 func (s *DeviceState) Prepare(claimUID string, allocation nascrd.AllocatedDevices) ([]string, error) {
+	klog.Infof("state.go: Prepare called claimUID %+v", claimUID)
 	s.Lock()
 	defer s.Unlock()
 
@@ -96,6 +99,7 @@ func (s *DeviceState) Prepare(claimUID string, allocation nascrd.AllocatedDevice
 		if err != nil {
 			return nil, fmt.Errorf("unable to get CDI devices names: %v", err)
 		}
+		klog.Infof("state.go: Prepare: cdiDevices: %+v", cdiDevices)
 		return cdiDevices, nil
 	}
 
@@ -127,6 +131,7 @@ func (s *DeviceState) Prepare(claimUID string, allocation nascrd.AllocatedDevice
 }
 
 func (s *DeviceState) Unprepare(claimUID string) error {
+	klog.Infof("state.go: Unprepare called claimUID %+v", claimUID)
 	s.Lock()
 	defer s.Unlock()
 
@@ -155,6 +160,7 @@ func (s *DeviceState) Unprepare(claimUID string) error {
 }
 
 func (s *DeviceState) GetUpdatedSpec(inspec *nascrd.NodeAllocationStateSpec) (*nascrd.NodeAllocationStateSpec, error) {
+	klog.Infof("state.go: GetUpdatedSpec called")
 	s.Lock()
 	defer s.Unlock()
 
@@ -173,6 +179,7 @@ func (s *DeviceState) GetUpdatedSpec(inspec *nascrd.NodeAllocationStateSpec) (*n
 }
 
 func (s *DeviceState) prepareGpus(claimUID string, allocated *nascrd.AllocatedGpus) (*PreparedGpus, error) {
+	klog.Infof("state.go: prepareGpus called %+v", claimUID)
 	prepared := &PreparedGpus{}
 
 	for _, device := range allocated.Devices {
@@ -189,10 +196,12 @@ func (s *DeviceState) prepareGpus(claimUID string, allocated *nascrd.AllocatedGp
 }
 
 func (s *DeviceState) unprepareGpus(claimUID string, devices *PreparedDevices) error {
+	klog.Infof("state.go: unprepareGpus called  %+v", claimUID)
 	return nil
 }
 
 func (s *DeviceState) syncAllocatableDevicesToCRDSpec(spec *nascrd.NodeAllocationStateSpec) error {
+	klog.Infof("state.go: syncAllocatableDevicesToCRDSpec called")
 	gpus := make(map[string]nascrd.AllocatableDevice)
 	for _, device := range s.allocatable {
 		gpus[device.uuid] = nascrd.AllocatableDevice{
@@ -214,6 +223,7 @@ func (s *DeviceState) syncAllocatableDevicesToCRDSpec(spec *nascrd.NodeAllocatio
 }
 
 func (s *DeviceState) syncPreparedDevicesFromCRDSpec(spec *nascrd.NodeAllocationStateSpec) error {
+	klog.Infof("state.go: syncPreparedDevicesFromCRDSpec called")
 	gpus := s.allocatable
 
 	prepared := make(PreparedClaims)
@@ -235,6 +245,7 @@ func (s *DeviceState) syncPreparedDevicesFromCRDSpec(spec *nascrd.NodeAllocation
 }
 
 func (s *DeviceState) syncPreparedDevicesToCRDSpec(spec *nascrd.NodeAllocationStateSpec) error {
+	klog.Infof("state.go: syncPreparedDevicesToCRDSpec called")
 	outcas := make(map[string]nascrd.PreparedDevices)
 	for claim, devices := range s.prepared {
 		var prepared nascrd.PreparedDevices

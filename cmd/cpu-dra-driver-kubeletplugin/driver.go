@@ -37,6 +37,7 @@ type driver struct {
 }
 
 func NewDriver(config *Config) (*driver, error) {
+	klog.Infof("driver.go: NewDriver called")
 	var d *driver
 	client := nasclient.New(config.nascrd, config.exampleclient.NasV1alpha1())
 	err := retry.RetryOnConflict(retry.DefaultRetry, func() error {
@@ -86,6 +87,7 @@ func NewDriver(config *Config) (*driver, error) {
 }
 
 func (d *driver) Shutdown() error {
+	klog.Infof("driver.go: Shutdown called")
 	return retry.RetryOnConflict(retry.DefaultRetry, func() error {
 		err := d.nasclient.Get()
 		if err != nil {
@@ -159,6 +161,7 @@ func (d *driver) NodeUnprepareResource(ctx context.Context, req *drapbv1.NodeUnp
 }
 
 func (d *driver) Prepare(claimUID string) ([]string, error) {
+	klog.Infof("driver.go: Prepare called claimUID %+v", claimUID)
 	err := d.nasclient.Get()
 	if err != nil {
 		return nil, err
@@ -171,6 +174,7 @@ func (d *driver) Prepare(claimUID string) ([]string, error) {
 }
 
 func (d *driver) Unprepare(claimUID string) error {
+	klog.Infof("driver.go: Unprepare called claimUID %+v", claimUID)
 	err := d.nasclient.Get()
 	if err != nil {
 		return err

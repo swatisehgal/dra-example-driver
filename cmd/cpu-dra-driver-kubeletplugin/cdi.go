@@ -23,6 +23,7 @@ import (
 	cdiapi "github.com/container-orchestrated-devices/container-device-interface/pkg/cdi"
 	cdispec "github.com/container-orchestrated-devices/container-device-interface/specs-go"
 	nascrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/nas/v1alpha1"
+	"k8s.io/klog/v2"
 )
 
 const (
@@ -38,6 +39,7 @@ type CDIHandler struct {
 }
 
 func NewCDIHandler(config *Config) (*CDIHandler, error) {
+	klog.Infof("cdi.go: NewCDIHandler  called")
 	registry := cdiapi.GetRegistry(
 		cdiapi.WithSpecDirs(*config.flags.cdiRoot),
 	)
@@ -55,10 +57,12 @@ func NewCDIHandler(config *Config) (*CDIHandler, error) {
 }
 
 func (cdi *CDIHandler) GetDevice(device string) *cdiapi.Device {
+	klog.Infof("cdi.go: GetDevice called: %+v", device)
 	return cdi.registry.DeviceDB().GetDevice(device)
 }
 
 func (cdi *CDIHandler) CreateCommonSpecFile() error {
+	klog.Infof("cdi.go: CreateCommonSpecFile  called")
 	spec := &cdispec.Spec{
 		Kind: cdiKind,
 		Devices: []cdispec.Device{
@@ -89,6 +93,8 @@ func (cdi *CDIHandler) CreateCommonSpecFile() error {
 }
 
 func (cdi *CDIHandler) CreateClaimSpecFile(claimUID string, devices *PreparedResources) error {
+	klog.Infof("cdi.go: CreateClaimSpecFile called claimUID :%+v, devices: %+v", claimUID, devices)
+
 	specName := cdiapi.GenerateTransientSpecName(cdiVendor, cdiClass, claimUID)
 
 	spec := &cdispec.Spec{
@@ -125,11 +131,13 @@ func (cdi *CDIHandler) CreateClaimSpecFile(claimUID string, devices *PreparedRes
 }
 
 func (cdi *CDIHandler) DeleteClaimSpecFile(claimUID string) error {
+	klog.Infof("cdi.go: DeleteClaimSpecFile called claimUID :%+v", claimUID)
 	specName := cdiapi.GenerateTransientSpecName(cdiVendor, cdiClass, claimUID)
 	return cdi.registry.SpecDB().RemoveSpec(specName)
 }
 
 func (cdi *CDIHandler) GetClaimDevices(claimUID string, devices *PreparedResources) ([]string, error) {
+	klog.Infof("cdi.go: GetClaimDevices called claimUID :%+v", claimUID)
 	cdiDevices := []string{
 		cdiapi.QualifiedName(cdiVendor, cdiClass, cdiCommonDeviceName),
 	}
@@ -143,6 +151,6 @@ func (cdi *CDIHandler) GetClaimDevices(claimUID string, devices *PreparedResourc
 	default:
 		return nil, fmt.Errorf("unknown device type: %v", devices.Type())
 	}
-
+	klog.Infof("cdi.go: GetClaimDevices cdiDevices:%+v", cdiDevices)
 	return cdiDevices, nil
 }

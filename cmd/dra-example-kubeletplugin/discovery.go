@@ -21,9 +21,11 @@ import (
 	"os"
 
 	"github.com/google/uuid"
+	"k8s.io/klog/v2"
 )
 
 func enumerateAllPossibleDevices() (AllocatableDevices, error) {
+	klog.Infof("enumerateAllPossibleDevices called")
 	numGPUs := 8
 	seed := os.Getenv("NODE_NAME")
 	uuids := generateUUIDs(seed, numGPUs)
@@ -38,10 +40,12 @@ func enumerateAllPossibleDevices() (AllocatableDevices, error) {
 		}
 		alldevices[uuid] = deviceInfo
 	}
+	klog.Infof("enumerateAllPossibleDevices: alldevices %+v", alldevices)
 	return alldevices, nil
 }
 
 func generateUUIDs(seed string, count int) []string {
+	klog.Infof("generateUUIDs called")
 	rand := rand.New(rand.NewSource(hash(seed)))
 
 	uuids := make([]string, count)
@@ -56,6 +60,7 @@ func generateUUIDs(seed string, count int) []string {
 }
 
 func hash(s string) int64 {
+	klog.Infof("hash called")
 	h := int64(0)
 	for _, c := range s {
 		h = 31*h + int64(c)

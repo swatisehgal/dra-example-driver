@@ -18,6 +18,7 @@ package v1alpha1
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/klog/v2"
 )
 
 const (
@@ -38,6 +39,7 @@ type NodeAllocationStateConfig struct {
 }
 
 func NewNodeAllocationState(config *NodeAllocationStateConfig) *NodeAllocationState {
+	klog.Infof("nas/v1alpha1/api.go: NewNodeAllocationState called")
 	nascrd := &NodeAllocationState{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      config.Name,

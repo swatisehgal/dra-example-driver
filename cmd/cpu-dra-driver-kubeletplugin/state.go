@@ -21,6 +21,7 @@ import (
 	"sync"
 
 	nascrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/nas/v1alpha1"
+	"k8s.io/klog/v2"
 
 	"github.com/jaypipes/ghw"
 )
@@ -63,6 +64,7 @@ type ResourceState struct {
 }
 
 func NewResourceState(config *Config) (*ResourceState, error) {
+	klog.Infof("NewResourceState called")
 	topology, err := ghw.Topology(ghw.WithPathOverrides(ghw.PathOverrides{
 		"/sys": *config.flags.sysFsRoot,
 	}))
@@ -80,6 +82,7 @@ func NewResourceState(config *Config) (*ResourceState, error) {
 		return nil, fmt.Errorf("error enumerating all possible devices: %v", err)
 	}
 
+	klog.Infof("state.go: allocatable: %+v", allocatable)
 	cdi, err := NewCDIHandler(config)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create CDI handler: %v", err)
@@ -105,6 +108,7 @@ func NewResourceState(config *Config) (*ResourceState, error) {
 }
 
 func (s *ResourceState) Prepare(claimUID string, allocation nascrd.AllocatedResources) ([]string, error) {
+	klog.Infof("state.go: Prepare called claimUID %+v", claimUID)
 	s.Lock()
 	defer s.Unlock()
 
@@ -113,6 +117,7 @@ func (s *ResourceState) Prepare(claimUID string, allocation nascrd.AllocatedReso
 		if err != nil {
 			return nil, fmt.Errorf("unable to get CDI devices names: %v", err)
 		}
+		klog.Infof("state.go: Prepare: cdiDevices: %+v", cdiDevices)
 		return cdiDevices, nil
 	}
 
@@ -144,6 +149,7 @@ func (s *ResourceState) Prepare(claimUID string, allocation nascrd.AllocatedReso
 }
 
 func (s *ResourceState) Unprepare(claimUID string) error {
+	klog.Infof("state.go: Unprepare called claimUID %+v", claimUID)
 	s.Lock()
 	defer s.Unlock()
 
@@ -172,6 +178,7 @@ func (s *ResourceState) Unprepare(claimUID string) error {
 }
 
 func (s *ResourceState) GetUpdatedSpec(inspec *nascrd.NodeAllocationStateSpec) (*nascrd.NodeAllocationStateSpec, error) {
+	klog.Infof("state.go: GetUpdatedSpec called")
 	s.Lock()
 	defer s.Unlock()
 
@@ -190,9 +197,16 @@ func (s *ResourceState) GetUpdatedSpec(inspec *nascrd.NodeAllocationStateSpec) (
 }
 
 func (s *ResourceState) prepareCPUs(claimUID string, allocated *nascrd.AllocatedCPUs) (*PreparedCPUs, error) {
+	klog.Infof("state.go: prepareCPUs called %+v", claimUID)
+
+	klog.Infof("state.go: preparing resources for claim %+v", claimUID)
 	prepared := &PreparedCPUs{}
 
+	klog.Infof("state.go: prepareCPUs called allocated.Resources:%+v", allocated.Resources)
 	for _, device := range allocated.Resources {
+		klog.Infof("UPDATE: state.go: prepareCPUs device %+v", device)
+		klog.Infof("UPDATE: state.go: prepareCPUs s.allocatable[%s] %+v", device.UUID, s.allocatable[device.UUID])
+
 		cpuInfo := s.allocatable[device.UUID].CPUInfo
 
 		if _, exists := s.allocatable[device.UUID]; !exists {
@@ -206,10 +220,12 @@ func (s *ResourceState) prepareCPUs(claimUID string, allocated *nascrd.Allocated
 }
 
 func (s *ResourceState) unprepareCPUs(claimUID string, devices *PreparedResources) error {
+	klog.Infof("state.go: unprepareCpus called  %+v", claimUID)
 	return nil
 }
 
 func (s *ResourceState) syncAllocatableDevicesToCRDSpec(spec *nascrd.NodeAllocationStateSpec) error {
+	klog.Infof("state.go: syncAllocatableDevicesToCRDSpec called")
 	cpus := make(map[string]nascrd.AllocatableResource)
 	for _, device := range s.allocatable {
 		cpus[device.uuid] = nascrd.AllocatableResource{
@@ -231,6 +247,7 @@ func (s *ResourceState) syncAllocatableDevicesToCRDSpec(spec *nascrd.NodeAllocat
 }
 
 func (s *ResourceState) syncPreparedDevicesFromCRDSpec(spec *nascrd.NodeAllocationStateSpec) error {
+	klog.Infof("state.go: syncPreparedDevicesFromCRDSpec called")
 	cpus := s.allocatable
 
 	prepared := make(PreparedClaims)
@@ -253,6 +270,7 @@ func (s *ResourceState) syncPreparedDevicesFromCRDSpec(spec *nascrd.NodeAllocati
 }
 
 func (s *ResourceState) syncPreparedDevicesToCRDSpec(spec *nascrd.NodeAllocationStateSpec) error {
+	klog.Infof("state.go: syncPreparedDevicesToCRDSpec called")
 	outcas := make(map[string]nascrd.PreparedResources)
 	for claim, resources := range s.prepared {
 		var prepared nascrd.PreparedResources
