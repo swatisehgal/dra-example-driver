@@ -75,7 +75,7 @@ func NewResourceState(config *Config) (*ResourceState, error) {
 		return nil, err
 	}
 
-	allocatable, err := enumerateAllCPUs(topology, cpuInfo)
+	allocatable, err := enumerateAllCPUs(topology, cpuInfo, config.flags.reservedCPUs)
 	if err != nil {
 		return nil, fmt.Errorf("error enumerating all possible devices: %v", err)
 	}

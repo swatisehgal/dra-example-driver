@@ -23,9 +23,18 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jaypipes/ghw"
+	"k8s.io/klog/v2"
+	"k8s.io/utils/cpuset"
 )
 
-func enumerateAllCPUs(topologyInfo *ghw.TopologyInfo, cpuInfo *ghw.CPUInfo) (AllocatableResources, error) {
+func enumerateAllCPUs(topologyInfo *ghw.TopologyInfo, cpuInfo *ghw.CPUInfo, reservedCPUs *string) (AllocatableResources, error) {
+	klog.Infof("enumerateAllCPUs called")
+	reservedCpuset, err := cpuset.Parse(*reservedCPUs)
+	if err != nil {
+		return nil, err
+	}
+	klog.Infof("reservedCpuset %+v", reservedCpuset)
+
 	numCPUs := getTotalCPUs(topologyInfo)
 	seed := os.Getenv("NODE_NAME")
 	uuids := generateUUIDs(seed, numCPUs)
@@ -34,6 +43,10 @@ func enumerateAllCPUs(topologyInfo *ghw.TopologyInfo, cpuInfo *ghw.CPUInfo) (All
 	for _, node := range topologyInfo.Nodes {
 		for _, core := range node.Cores {
 			for _, cpu := range core.LogicalProcessors {
+				if reservedCpuset.Contains(cpu) {
+					klog.Infof("Skipping reserved CPU: %d", cpu)
+					continue
+				}
 				cpuUUID := fmt.Sprintf("%s-%d-%d-%d", uuids[cpuNum], node.ID, core.ID, cpu)
 				cpuInfo := &AllocatableResourceInfo{
 					CPUInfo: &CPUInfo{
