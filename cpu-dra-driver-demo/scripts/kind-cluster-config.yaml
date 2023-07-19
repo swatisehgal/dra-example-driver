@@ -12,6 +12,11 @@ containerdConfigPatches:
 - |-
   [plugins."io.containerd.grpc.v1.cri"]
     enable_cdi = true
+# Enable NRI as described in
+# https://github.com/containerd/containerd/blob/main/docs/NRI.md#enabling-nri-support-in-containerd
+- |-
+  [plugins."io.containerd.nri.v1.nri"]
+    disable = false
 nodes:
 - role: control-plane
   kubeadmConfigPatches:
