@@ -40,3 +40,4 @@ COPY --from=build /artifacts/set-nas-status                /usr/bin/set-nas-stat
 COPY --from=build /artifacts/cpu-dra-driver-controller     /usr/bin/cpu-dra-driver-controller
 COPY --from=build /artifacts/cpu-dra-driver-kubeletplugin  /usr/bin/cpu-dra-driver-kubeletplugin
 COPY --from=build /artifacts/set-cpu-dra-driver-nas-status /usr/bin/set-cpu-dra-driver-nas-status
+COPY --from=build /artifacts/cpu-nri-plugin                /usr/bin/cpu-nri-plugin

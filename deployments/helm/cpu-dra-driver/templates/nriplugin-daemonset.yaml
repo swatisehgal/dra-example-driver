@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "cpu-dra-driver.fullname" . }}-nri-plugin
+  namespace: {{ include "cpu-dra-driver.namespace" . }}
+  labels:
+    {{- include "cpu-dra-driver.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: nri-plugin
+  template:
+    metadata:
+      labels:
+        app: nri-plugin
+    spec:
+      containers:
+          - name: nri-plugin-container
+            image: {{ include "cpu-dra-driver.fullimage" . }}
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            command: ["cpu-nri-plugin", "--name", "cpu-nri-plugin", "--idx", "99"]
+            resources:
+              limits:
+                cpu: 500m
+                memory: '100M'
+            volumeMounts:
+              - name: nri-sock
+                mountPath: /var/run/nri/nri.sock
+            env:
+            - name: "NODE_NAME"
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+      volumes:
+        - name: nri-sock
+          hostPath:
+            path: /var/run/nri/nri.sock
+            type: Socket
+

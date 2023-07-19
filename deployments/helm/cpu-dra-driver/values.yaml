@@ -61,3 +61,18 @@ kubeletPlugin:
       securityContext:
         privileged: true
       resources: {}
+
+nriPlugin:
+  priorityClassName: "system-node-critical"
+  updateStrategy:
+    type: RollingUpdate
+  podAnnotations: {}
+  podSecurityContext: {}
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  containers:
+    nriplugin:
+      securityContext:
+        privileged: true
+      resources: {}
