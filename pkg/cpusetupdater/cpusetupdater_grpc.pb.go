@@ -59,21 +59,19 @@ func (c *allocateClient) UpdateCPUSet(ctx context.Context, in *CpusetRequest, op
 }
 
 // AllocateServer is the server API for Allocate service.
-// All implementations must embed UnimplementedAllocateServer
+// All implementations should embed UnimplementedAllocateServer
 // for forward compatibility
 type AllocateServer interface {
 	UpdateCPUSet(context.Context, *CpusetRequest) (*CpusetResponse, error)
-	mustEmbedUnimplementedAllocateServer()
 }
 
-// UnimplementedAllocateServer must be embedded to have forward compatible implementations.
+// UnimplementedAllocateServer should be embedded to have forward compatible implementations.
 type UnimplementedAllocateServer struct {
 }
 
 func (UnimplementedAllocateServer) UpdateCPUSet(context.Context, *CpusetRequest) (*CpusetResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateCPUSet not implemented")
 }
-func (UnimplementedAllocateServer) mustEmbedUnimplementedAllocateServer() {}
 
 // UnsafeAllocateServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to AllocateServer will
