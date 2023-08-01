@@ -17,11 +17,14 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"sync"
 
 	nascrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/nas/v1alpha1"
+	cpusetupdaterpb "github.com/kubernetes-sigs/dra-example-driver/pkg/cpusetupdater"
 	"k8s.io/klog/v2"
+	"k8s.io/utils/cpuset"
 
 	"github.com/jaypipes/ghw"
 )
@@ -290,4 +293,25 @@ func (s *ResourceState) syncPreparedDevicesToCRDSpec(spec *nascrd.NodeAllocation
 	}
 	spec.PreparedClaims = outcas
 	return nil
+}
+
+func (s *ResourceState) UpdateCPUSet(c context.Context, r *cpusetupdaterpb.CpusetRequest) (*cpusetupdaterpb.CpusetResponse, error) {
+	klog.Info("UpdateCPUSet Server: UpdateCPUSet called")
+
+	klog.Infof("r.Version: %v", r.Version)
+	klog.Infof("Add another CPU id %qto the list", 4)
+	klog.Infof("r.ResourceName: %v", r.ResourceName)
+
+	klog.Infof("r.NodeName: %v", r.GetNodeName())
+
+	cpus, err := cpuset.Parse(r.Version + ",4")
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &cpusetupdaterpb.CpusetResponse{
+		Cpuset: cpus.String(),
+	}
+
+	return resp, nil
 }

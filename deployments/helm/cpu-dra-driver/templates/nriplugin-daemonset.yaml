@@ -19,6 +19,7 @@ spec:
             image: {{ include "cpu-dra-driver.fullimage" . }}
             imagePullPolicy: {{ .Values.image.pullPolicy }}
             command: ["cpu-nri-plugin", "--name", "cpu-nri-plugin", "--idx", "99"]
+            # args: [ "while true; do sleep 1000; done;" ]
             resources:
               limits:
                 cpu: 500m
@@ -26,6 +27,8 @@ spec:
             volumeMounts:
               - name: nri-sock
                 mountPath: /var/run/nri/nri.sock
+              - name: host-dra-plugin
+                mountPath: "/var/lib/kubelet/draplugin"
             env:
             - name: "NODE_NAME"
               valueFrom:
@@ -36,4 +39,7 @@ spec:
           hostPath:
             path: /var/run/nri/nri.sock
             type: Socket
+        - name: host-dra-plugin
+          hostPath:
+            path: /var/lib/kubelet/draplugin
 

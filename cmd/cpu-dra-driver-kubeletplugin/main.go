@@ -19,6 +19,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"net"
 	"os"
 	"os/signal"
 	"strings"
@@ -49,6 +50,7 @@ const (
 	PluginRegistrationPath = "/var/lib/kubelet/plugins_registry/" + DriverName + ".sock"
 	DriverPluginPath       = "/var/lib/kubelet/plugins/" + DriverName
 	DriverPluginSocketPath = DriverPluginPath + "/plugin.sock"
+	sockAddr               = "/var/lib/kubelet/draplugin/cpudraplugin.sock"
 )
 
 type Flags struct {
@@ -228,6 +230,15 @@ func StartPlugin(config *Config) error {
 	if err != nil {
 		return err
 	}
+
+	sock, err := net.Listen("unix", sockAddr)
+	if err != nil {
+		klog.Errorf("Socket Not found", err)
+	}
+
+	go func() {
+		driver.Run(sock)
+	}()
 
 	dp, err := plugin.Start(
 		driver,

@@ -19,10 +19,17 @@ package main
 import (
 	"context"
 	"fmt"
+	"net"
+	"os"
+	"path/filepath"
+	"sync"
 
+	cpusetupdaterpb "github.com/kubernetes-sigs/dra-example-driver/pkg/cpusetupdater"
+	"google.golang.org/grpc"
 	"k8s.io/client-go/util/retry"
 	"k8s.io/klog/v2"
 	drapbv1 "k8s.io/kubelet/pkg/apis/dra/v1alpha2"
+	"k8s.io/utils/cpuset"
 
 	nascrd "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/nas/v1alpha1"
 	nasclient "github.com/kubernetes-sigs/dra-example-driver/api/example.com/resource/cpu/nas/v1alpha1/client"
@@ -34,6 +41,8 @@ type driver struct {
 	nascrd    *nascrd.NodeAllocationState
 	nasclient *nasclient.Client
 	state     *ResourceState
+	server    *grpc.Server
+	wg        sync.WaitGroup
 }
 
 func NewDriver(config *Config) (*driver, error) {
@@ -71,10 +80,28 @@ func NewDriver(config *Config) (*driver, error) {
 			return err
 		}
 
+		if err := os.Remove(sockAddr); err != nil && !os.IsNotExist(err) {
+			klog.Errorf("failed to remove stalled socket file", err)
+		}
+
+		if _, err := os.Stat(sockAddr); !os.IsNotExist(err) {
+			err := os.MkdirAll(filepath.Dir(sockAddr), 0750)
+			if err != nil {
+				return err
+			}
+			_, err = os.Create(sockAddr)
+			if err != nil {
+				return err
+			}
+		}
+
+		pluginServer := grpc.NewServer()
+
 		d = &driver{
 			nascrd:    config.nascrd,
 			nasclient: client,
 			state:     state,
+			server:    pluginServer,
 		}
 
 		return nil
@@ -184,4 +211,39 @@ func (d *driver) Unprepare(claimUID string) error {
 		return err
 	}
 	return nil
+}
+
+func (d *driver) UpdateCPUSet(c context.Context, r *cpusetupdaterpb.CpusetRequest) (*cpusetupdaterpb.CpusetResponse, error) {
+	klog.Info("UpdateCPUSet Server: UpdateCPUSet called")
+
+	klog.Infof("r.Version: %v", r.Version)
+	klog.Infof("Add another CPU id %qto the list", 4)
+	klog.Infof("r.ResourceName: %v", r.ResourceName)
+
+	klog.Infof("r.NodeName: %v", r.GetNodeName())
+
+	cpus, err := cpuset.Parse(r.Version + ",4")
+	if err != nil {
+		return nil, err
+	}
+
+	klog.Infof("cpus.String(): %v", cpus.String())
+	resp := &cpusetupdaterpb.CpusetResponse{
+		Cpuset: cpus.String(),
+	}
+
+	klog.Infof("Server sending resp: %v", resp)
+	return resp, nil
+}
+
+func (d *driver) Run(sock net.Listener) {
+	klog.Info("driver Run:")
+
+	// d.wg.Add(1)
+
+	cpusetupdaterpb.RegisterAllocateServer(d.server, d)
+
+	d.server.Serve(sock)
+
+	klog.InfoS("Starting to serve on socket", "socket", sockAddr)
 }

@@ -20,13 +20,20 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"net"
 	"os"
+	"strings"
+	"time"
 
+	"github.com/containers/podman/v4/pkg/env"
 	"github.com/sirupsen/logrus"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"sigs.k8s.io/yaml"
 
 	"github.com/containerd/nri/pkg/api"
 	"github.com/containerd/nri/pkg/stub"
+	cpusetupdaterpb "github.com/kubernetes-sigs/dra-example-driver/pkg/cpusetupdater"
 )
 
 type config struct {
@@ -34,8 +41,13 @@ type config struct {
 }
 
 type plugin struct {
-	stub stub.Stub
+	stub   stub.Stub
+	client cpusetupdaterpb.AllocateClient
 }
+
+const (
+	sockAddr = "/var/lib/kubelet/draplugin/cpudraplugin.sock"
+)
 
 var (
 	cfg config
@@ -83,8 +95,18 @@ func (p *plugin) RemovePodSandbox(_ context.Context, pod *api.PodSandbox) error 
 	return nil
 }
 
-func (p *plugin) CreateContainer(_ context.Context, pod *api.PodSandbox, ctr *api.Container) (*api.ContainerAdjustment, []*api.ContainerUpdate, error) {
+func (p *plugin) CreateContainer(ctx context.Context, pod *api.PodSandbox, ctr *api.Container) (*api.ContainerAdjustment, []*api.ContainerUpdate, error) {
 	log.Infof("Creating container %s/%s/%s...", pod.GetNamespace(), pod.GetName(), ctr.GetName())
+
+	log.Infof("pod: pod.Linux.PodResources %v", pod.Linux.PodResources)
+	log.Infof("ctr: ctr.Linux.GetResources() %v", ctr.Linux.GetResources())
+
+	adjustment := &api.ContainerAdjustment{}
+	updates := []*api.ContainerUpdate{}
+
+	if !AreCPUsBackedByDRARequested(ctr, pod) {
+		return adjustment, updates, nil
+	}
 
 	//
 	// This is the container creation request handler. Because the container
@@ -97,9 +119,22 @@ func (p *plugin) CreateContainer(_ context.Context, pod *api.PodSandbox, ctr *ap
 	// allowed to update other existing containers. Take a look at the update
 	// functions in pkg/api/update.go to see the available controls.
 	//
+	log.Infof("Create request")
 
-	adjustment := &api.ContainerAdjustment{}
-	updates := []*api.ContainerUpdate{}
+	req := &cpusetupdaterpb.CpusetRequest{
+		Version:      "2,3",
+		NodeName:     os.Getenv("NODE_NAME"),
+		ResourceName: "cpu",
+	}
+
+	log.Infof("NRI: client: About to call UpdateCPUSet")
+
+	resp, err := p.client.UpdateCPUSet(ctx, req)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	log.Infof("Got UpdateNodeTopology: response%v", resp)
 
 	return adjustment, updates, nil
 }
@@ -190,12 +225,68 @@ func main() {
 		opts = append(opts, stub.WithPluginIdx(pluginIdx))
 	}
 
+	log.Info("Before Stub creation")
+
 	if p.stub, err = stub.New(p, opts...); err != nil {
 		log.Fatalf("failed to create plugin stub: %v", err)
 	}
 
-	if err = p.stub.Run(context.Background()); err != nil {
-		log.Errorf("plugin exited (%v)", err)
-		os.Exit(1)
+	log.Info("Stub created")
+	go func() {
+		if err = p.stub.Run(context.Background()); err != nil {
+			log.Errorf("plugin exited (%v)", err)
+			os.Exit(1)
+		}
+	}()
+
+	log.Info("Preparing for dial up")
+
+	var dialOpts []grpc.DialOption
+	dialOpts = append(dialOpts, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	dialOpts = append(dialOpts, grpc.WithContextDialer(func(ctx context.Context, addr string) (net.Conn, error) {
+		return net.Dial("unix", addr)
+	}))
+
+	log.Info("Dialling")
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+
+	conn, err := grpc.DialContext(ctx, sockAddr, dialOpts...)
+	if err != nil {
+		log.Fatalf("Could not dial gRPC: %s", err)
 	}
+	defer conn.Close()
+	defer cancel()
+
+	log.Info("creating client")
+
+	p.client = cpusetupdaterpb.NewAllocateClient(conn)
+
+	select {}
+}
+
+func AreCPUsBackedByDRARequested(ctr *api.Container, pod *api.PodSandbox) bool {
+	log.Infof("CPUsBackedByDRARequested called: Pod ID: %q CPU Id: %q", pod.Name, ctr.Name)
+
+	// TODO: This needs to check for either resource claim or an annotation populated by DRA controller
+	if strings.HasPrefix(pod.Namespace, "cpu-test") {
+
+		log.Infof("Passed namespapace prefix test: Pod ID: %q CPU Id: %q", pod.Name, ctr.Name)
+		log.Infof("pod: pod.Linux.PodResources %v", pod.Linux.PodResources)
+		log.Infof("pod: pod.GetLinux().Resources.GetUnified() %v", pod.GetLinux().Resources.GetUnified())
+		log.Infof("ctr: ctr.Linux.GetResources() %v", ctr.Linux.GetResources())
+
+		envs, err := env.ParseSlice(ctr.Env)
+		if err != nil {
+			log.Errorf("failed to parse environment variables for container: %q; err: %v", ctr.Name, err)
+			return false
+		}
+
+		for k, v := range envs {
+			log.Infof("container :%q Environment variable: key %q value: %q", ctr.Name, k, v)
+			return true
+		}
+
+		return true
+	}
+	return false
 }
