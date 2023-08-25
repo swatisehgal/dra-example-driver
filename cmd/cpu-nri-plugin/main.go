@@ -29,6 +29,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"k8s.io/utils/cpuset"
 	"sigs.k8s.io/yaml"
 
 	"github.com/containerd/nri/pkg/api"
@@ -122,10 +123,18 @@ func (p *plugin) CreateContainer(ctx context.Context, pod *api.PodSandbox, ctr *
 	log.Infof("Create request")
 
 	req := &cpusetupdaterpb.CpusetRequest{
-		Version:      "2,3",
-		NodeName:     os.Getenv("NODE_NAME"),
-		ResourceName: "cpu",
+		Version:       "2,3",
+		NodeName:      os.Getenv("NODE_NAME"),
+		ResourceName:  "cpu",
+		PodName:       pod.Name,
+		PodNamespace:  pod.Namespace,
+		ContainerName: ctr.Name,
 	}
+	// podResInfo := &podResourceInfo{
+	// 	name:          pod.Name,
+	// 	namespace:     pod.Namespace,
+	// 	containerInfo: ctr.Name,
+	// }
 
 	log.Infof("NRI: client: About to call UpdateCPUSet")
 
@@ -134,7 +143,28 @@ func (p *plugin) CreateContainer(ctx context.Context, pod *api.PodSandbox, ctr *
 		return nil, nil, err
 	}
 
-	log.Infof("Got UpdateNodeTopology: response%v", resp)
+	log.Infof("Got UpdateNodeTopology: response: %v", resp)
+
+	log.Infof("CPUset received from response: %v", resp.Cpuset)
+
+	uniqueName := getCtrUniqueName(pod, ctr)
+	cpus, err := cpuset.Parse(resp.Cpuset)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	log.Infof("CPUset parsed: %v", cpus)
+	log.Infof("append mutual cpus to container %s", uniqueName)
+	err = setCPUs(ctr, &cpus, uniqueName)
+	if err != nil {
+		return adjustment, updates, fmt.Errorf("CreateContainer: setting CPUs failed: %w", err)
+	}
+
+	adjustment.Linux = &api.LinuxContainerAdjustment{
+		Resources: ctr.Linux.GetResources(),
+	}
+
+	log.Infof("sending adjustment to runtime: %+v", adjustment)
 
 	return adjustment, updates, nil
 }
@@ -262,6 +292,19 @@ func main() {
 	p.client = cpusetupdaterpb.NewAllocateClient(conn)
 
 	select {}
+}
+
+func getCtrUniqueName(pod *api.PodSandbox, ctr *api.Container) string {
+	return fmt.Sprintf("%s/%s/%s", pod.GetNamespace(), pod.GetName(), ctr.GetName())
+}
+
+func setCPUs(ctr *api.Container, cpus *cpuset.CPUSet, uniqueName string) error {
+	lspec := ctr.GetLinux()
+
+	ctrCpus := lspec.Resources.Cpu
+	ctrCpus.Cpus = (*cpus).String()
+	log.Infof("container %q cpus ids after applying cpus %q", uniqueName, ctrCpus.Cpus)
+	return nil
 }
 
 func AreCPUsBackedByDRARequested(ctr *api.Container, pod *api.PodSandbox) bool {

@@ -37,12 +37,21 @@ import (
 
 var _ drapbv1.NodeServer = &driver{}
 
+type driverCPUResourceData struct {
+	info map[string]resourceInfo // namespace to podinfo mapping
+}
+type resourceInfo struct {
+	podName       string
+	containerInfo map[string]string // mapping between containers and cpusets allocated
+}
+
 type driver struct {
 	nascrd    *nascrd.NodeAllocationState
 	nasclient *nasclient.Client
 	state     *ResourceState
 	server    *grpc.Server
 	wg        sync.WaitGroup
+	cpuData   *driverCPUResourceData
 }
 
 func NewDriver(config *Config) (*driver, error) {
@@ -97,11 +106,16 @@ func NewDriver(config *Config) (*driver, error) {
 
 		pluginServer := grpc.NewServer()
 
+		driverResourceInfo := &driverCPUResourceData{
+			info: make(map[string]resourceInfo),
+		}
+
 		d = &driver{
 			nascrd:    config.nascrd,
 			nasclient: client,
 			state:     state,
 			server:    pluginServer,
+			cpuData:   driverResourceInfo,
 		}
 
 		return nil
@@ -220,7 +234,11 @@ func (d *driver) UpdateCPUSet(c context.Context, r *cpusetupdaterpb.CpusetReques
 	klog.Infof("Add another CPU id %qto the list", 4)
 	klog.Infof("r.ResourceName: %v", r.ResourceName)
 
-	klog.Infof("r.NodeName: %v", r.GetNodeName())
+	klog.Infof("r.PodName: %v", r.PodName)
+	klog.Infof("r.PodNamespace: %v", r.PodNamespace)
+	klog.Infof("r.ContainerName: %v", r.ContainerName)
+
+	klog.Infof("r: %v", r.GetNodeName())
 
 	cpus, err := cpuset.Parse(r.Version + ",4")
 	if err != nil {
@@ -232,14 +250,29 @@ func (d *driver) UpdateCPUSet(c context.Context, r *cpusetupdaterpb.CpusetReques
 		Cpuset: cpus.String(),
 	}
 
+	ctrInfo := make(map[string]string)
+	var resInfo resourceInfo
+	var ok bool
+	if resInfo, ok = d.cpuData.info[r.PodNamespace]; !ok {
+		ctrInfo[r.ContainerName] = cpus.String()
+		resInfo = resourceInfo{
+			podName:       r.PodName,
+			containerInfo: ctrInfo,
+		}
+	}
+
+	driverInfo := make(map[string]resourceInfo)
+	driverInfo[r.PodNamespace] = resInfo
+	d.cpuData = &driverCPUResourceData{
+		info: driverInfo,
+	}
+
 	klog.Infof("Server sending resp: %v", resp)
 	return resp, nil
 }
 
 func (d *driver) Run(sock net.Listener) {
 	klog.Info("driver Run:")
-
-	// d.wg.Add(1)
 
 	cpusetupdaterpb.RegisterAllocateServer(d.server, d)
 
