@@ -26,6 +26,9 @@ message CpusetRequest {
     string version = 1;
     string node_name = 2;
     string resource_name = 3;
+    string pod_name = 4;
+    string pod_namespace = 5;
+    string container_name = 6;
    
 }
 
